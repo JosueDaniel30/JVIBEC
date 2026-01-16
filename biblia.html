@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <title>Biblia RVR1960 | Jóvenes con Cristo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Biblia Reina Valera 1960 completa - Leer, estudiar y meditar en la Palabra de Dios">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="json/manifest.json">
+  <link rel="apple-touch-icon" href="assets/logojov.png">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- CSS personalizado adicional -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/notificacion.css">
+  
+  <!-- Configuración personalizada de Tailwind -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#4f46e5', light: '#818cf8', dark: '#3730a3' },
+            secondary: { DEFAULT: '#10b981', light: '#34d399', dark: '#059669' },
+            accent: { DEFAULT: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+            'display': ['Poppins', 'sans-serif']
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'book-pulse': 'bookPulse 2s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'slide-in-right': 'slideInRight 0.5s ease-out'
+          },
+          keyframes: {
+            bookPulse: {
+              '0%, 100%': { transform: 'scale(1)', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' },
+              '50%': { transform: 'scale(1.05)', boxShadow: '0 20px 25px -5px rgba(79, 70, 229, 0.2)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            slideInRight: {
+              '0%': { transform: 'translateX(20px)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- CSS personalizado para funcionalidades bíblicas -->
+  <style>
+    :root { --primary: #4f46e5; --secondary: #10b981; }
+    .font-display { font-family: 'Poppins', sans-serif; }
+    .font-serif { font-family: 'Merriweather', serif; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .prose { max-width: 65ch; }
+    
+    /* Estilos para el lector bíblico */
+    .verse-item { transition: all 0.2s ease; }
+    .verse-item:hover { background-color: rgba(79, 70, 229, 0.05); }
+    .verse-item.active { background-color: rgba(79, 70, 229, 0.1); border-left: 3px solid #4f46e5; }
+    .book-card { transition: all 0.3s ease; }
+    .book-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(79, 70, 229, 0.2); }
+    .chapter-btn.active { background-color: #4f46e5 !important; color: white !important; }
+    .search-highlight { background-color: rgba(245, 158, 11, 0.3); padding: 2px 4px; border-radius: 4px; }
+    
+    /* Mejoras para libros dinámicos */
+    .book-icon {
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    }
+    .book-card:hover .book-icon {
+      transform: rotateY(10deg) scale(1.1);
+      filter: drop-shadow(0 8px 12px rgba(79, 70, 229, 0.3));
+    }
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    .progress-ring-circle {
+      stroke-dasharray: 113; /* 2 * π * 18 */
+      stroke-dashoffset: 113;
+      transition: stroke-dashoffset 1s ease;
+    }
+    
+    /* Efecto de brillo para libros leídos */
+    .book-completed {
+      position: relative;
+      overflow: hidden;
+    }
+    .book-completed::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+      );
+      transform: rotate(30deg);
+      animation: shine 3s infinite linear;
+    }
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+    }
+    
+    /* Animación para nuevos libros */
+    @keyframes newBookAppear {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .book-appear {
+      animation: newBookAppear 0.6s ease-out forwards;
+    }
+    
+    /* Efecto de onda al hacer clic */
+    .book-ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    .book-ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(79, 70, 229, 0.3);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    .book-ripple:focus::after {
+      animation: ripple 1s ease-out;
+    }
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(40, 40);
+      }
+    }
+    
+    /* Estilos para tabs de testamento */
+    .testament-tabs .tab-btn.active {
+      background-color: #4f46e5 !important;
+      color: white !important;
+    }
+    
+    .testament-tabs .tab-btn:not(.active) {
+      background-color: #e5e7eb;
+      color: #374151;
+    }
+    
+    .dark .testament-tabs .tab-btn:not(.active) {
+      background-color: #374151;
+      color: #e5e7eb;
+    }
+    
+    /* Asegurar que los estilos de book-card funcionen con Tailwind */
+    .books-grid .book-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .dark .books-grid .book-card {
+      background: #1f2937;
+    }
+    
+    .books-grid .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.2);
+    }
+    
+    .books-grid .book-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .books-grid .book-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      color: #111827;
+    }
+    
+    .dark .books-grid .book-title {
+      color: #f9fafb;
+    }
+    
+    .books-grid .book-chapters {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    
+    .dark .books-grid .book-chapters {
+      color: #9ca3af;
+    }
+    
+    /* Estilos para la sección de lectura */
+    #reading-section .chapter-btn {
+      padding: 0.5rem 1rem;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+    
+    .dark #reading-section .chapter-btn {
+      background: #1f2937;
+      border-color: #374151;
+      color: #f9fafb;
+    }
+    
+    #reading-section .chapter-btn:hover {
+      background: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+    }
+    
+    #reading-section .chapter-btn.active {
+      background: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+      font-weight: 600;
+    }
+    
+    #reading-section .chapter-content {
+      line-height: 1.8;
+      font-size: 1.1rem;
+      color: #374151;
+    }
+    
+    .dark #reading-section .chapter-content {
+      color: #e5e7eb;
+    }
+    
+    #reading-section .verse-item {
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+    
+    #reading-section .verse-item:hover {
+      background: rgba(79, 70, 229, 0.05);
+    }
+    
+    #reading-section .verse-item.active {
+      background: rgba(79, 70, 229, 0.1);
+      border-left: 3px solid #4f46e5;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
+  
+  <!-- Navegación principal -->
+  <header class="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center space-x-3 group">
+          <div class="w-10 h-10 bg-gradient-to-br from-primary to-primary-light rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow animate-pulse-slow">
+            <img src="assets/logojov.png" alt="Logo Jovenes" class="logo-icon w-8 h-8">
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-xl bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+              Jóvenes con Cristo
+            </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Biblia RVR1960 | Palabra de Dios</p>
+          </div>
+        </a>
+
+        <!-- Navegación desktop -->
+        <nav class="hidden md:flex items-center space-x-1">
+          <a href="index.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">🏠</span>
+            <span>Inicio</span>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">👤</span>
+            <span>Perfil</span>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary/10 text-primary font-semibold">
+            <span class="text-lg">📖</span>
+            <span>Biblia</span>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">🎯</span>
+            <span>Metas</span>
+          </a>
+        </nav>
+
+        <!-- Acciones -->
+        <div class="flex items-center space-x-3">
+          <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg dark:hidden">🌙</span>
+            <span class="text-lg hidden dark:inline">☀️</span>
+          </button>
+          <button onclick="mostrarSeccion('favoritos')" class="hidden md:inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors">
+            <span>⭐</span>
+            <span class="text-sm font-medium">Favoritos</span>
+          </button>
+          <button class="md:hidden p-2" id="mobile-menu-btn">
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" id="mobile-menu-backdrop"></div>
+    <div class="absolute inset-y-0 right-0 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 translate-x-full">
+      <div class="p-6 h-full flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+          <h3 class="text-xl font-bold">Menú Biblia</h3>
+          <button id="mobile-menu-close" class="p-2 text-2xl">×</button>
+        </div>
+        <nav class="space-y-2 flex-1">
+          <a href="index.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">🏠</span>
+            <div>
+              <div class="font-semibold">Inicio</div>
+              <div class="text-sm text-gray-500">Página principal</div>
+            </div>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">👤</span>
+            <div>
+              <div class="font-semibold">Perfil</div>
+              <div class="text-sm text-gray-500">Tu progreso</div>
+            </div>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-4 p-4 rounded-xl bg-primary/10 text-primary">
+            <span class="text-2xl">📖</span>
+            <div>
+              <div class="font-semibold">Biblia</div>
+              <div class="text-sm text-primary/70">Palabra de Dios</div>
+            </div>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">🎯</span>
+            <div>
+              <div class="font-semibold">Metas</div>
+              <div class="text-sm text-gray-500">Objetivos espirituales</div>
+            </div>
+          </a>
+        </nav>
+        <div class="pt-6 border-t border-gray-200 dark:border-gray-800 space-y-2">
+          <button onclick="mostrarSeccion('favoritos')" class="w-full flex items-center space-x-3 p-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl">
+            <span class="text-xl">⭐</span>
+            <span class="font-medium">Ver Favoritos</span>
+          </button>
+          <button onclick="loadRandomVerse()" class="w-full flex items-center space-x-3 p-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl">
+            <span class="text-xl">🔄</span>
+            <span class="font-medium">Versículo Aleatorio</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <main class="container mx-auto px-4 py-8">
+    
+    <!-- Sección de bienvenida a la Biblia -->
+    <section class="mb-10">
+      <div class="bg-gradient-to-br from-primary/5 to-purple-500/5 rounded-3xl p-8 md:p-12">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="flex-1">
+            <h1 id="bible-title" class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              Biblia Reina Valera 1960
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+              "Lámpara es a mis pies tu palabra, y lumbrera a mi camino" - Salmos 119:105
+            </p>
+            <div class="flex flex-wrap gap-3 mb-6">
+              <span class="px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium shadow-sm">
+                📖 66 Libros
+              </span>
+              <span class="px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium shadow-sm">
+                ✨ 1,189 Capítulos
+              </span>
+              <span class="px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium shadow-sm">
+                💫 Versión Completa
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button onclick="loadRandomVerse()" class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors flex items-center space-x-2">
+                <span>🔄</span>
+                <span>Versículo Aleatorio</span>
+              </button>
+              <button onclick="showSearch()" class="px-5 py-2.5 border-2 border-primary text-primary hover:bg-primary/5 font-semibold rounded-xl transition-colors flex items-center space-x-2">
+                <span>🔍</span>
+                <span>Buscar en la Biblia</span>
+              </button>
+              <button onclick="showFavorites()" class="px-5 py-2.5 border-2 border-primary text-primary hover:bg-primary/5 font-semibold rounded-xl transition-colors flex items-center space-x-2">
+                  <span>❤️</span>
+                  <span>Versículos que te inspiran</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex-shrink-0">
+            <div class="relative">
+              <div class="w-48 h-48 md:w-64 md:h-64 bg-gradient-to-br from-primary to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl animate-float">
+                <div class="text-center">
+                  <div class="text-6xl mb-4">📖</div>
+                  <div class="text-white font-bold text-2xl" id="stats-verses">0</div>
+                  <div class="text-white/90">versículos leídos</div>
+                </div>
+              </div>
+              <div class="absolute -top-2 -right-2 w-16 h-16 bg-accent rounded-full flex items-center justify-center shadow-lg animate-pulse-slow">
+                <span class="text-2xl">✨</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Versículo destacado del día -->
+    <section id="verse-section" class="mb-10">
+      <div class="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl p-6 border border-primary/20">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold flex items-center">
+            <span class="mr-2">⭐</span> Versículo Destacado
+          </h3>
+          <div class="flex space-x-2">
+            <button onclick="addToFavorites()" class="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors" title="Añadir a favoritos">
+              <span>❤️</span>
+            </button>
+            <button onclick="shareVerse()" class="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors" title="Compartir">
+              <span>📤</span>
+            </button>
+            <button onclick="loadRandomVerse()" class="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors" title="Nuevo versículo">
+              <span>🔄</span>
+            </button>
+          </div>
+        </div>
+        
+        <blockquote id="daily-verse-text" class="font-serif text-xl text-gray-800 dark:text-gray-100 italic mb-4 leading-relaxed">
+          "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna."
+        </blockquote>
+        
+        <div class="flex items-center justify-between mb-4">
+          <cite id="daily-verse-ref" class="font-semibold text-primary dark:text-primary-light cursor-pointer hover:underline" onclick="irAVersiculo()">
+            Juan 3:16
+          </cite>
+          <div class="flex space-x-2">
+            <span id="verse-theme" class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+              AMOR
+            </span>
+          </div>
+        </div>
+        
+        <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Tu progreso de lectura:</span>
+            <span class="inline-flex items-center text-secondary dark:text-secondary-light">
+              <span class="mr-1">📈</span>
+              <span id="reading-progress">0%</span>
+            </span>
+          </div>
+          <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div id="progress-bar" class="bg-primary h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Búsqueda rápida y filtros -->
+    <section id="search-section" class="mb-10" style="display: none;">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+        <div class="search-header mb-6">
+          <h2 class="text-2xl font-bold mb-2">🔍 Buscar Versículos</h2>
+          <p class="search-subtitle text-gray-600 dark:text-gray-400">Encuentra palabras de inspiración en la Biblia</p>
+        </div>
+
+        <div class="search-container">
+          <!-- Barra de búsqueda principal -->
+          <div class="search-bar mb-6">
+            <div class="flex space-x-3">
+              <div class="flex-1 relative">
+                <span class="absolute left-4 top-3 text-gray-500">🔍</span>
+                <input type="text" 
+                       id="search-input" 
+                       class="w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                       placeholder="Buscar versículos por palabra, frase o referencia...">
+                <button id="clear-search" class="absolute right-4 top-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" style="display: none;">✕</button>
+              </div>
+              <button id="search-btn" onclick="realizarBusquedaAvanzada()" class="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors shadow-md hover:shadow-lg flex items-center space-x-2">
+                <span>🔍</span>
+                <span>Buscar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtros avanzados -->
+          <div class="filters-section grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="filter-group">
+              <label class="filter-label block text-sm font-medium mb-2">📚 Testamento</label>
+              <select id="testament-select" class="filter-select w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Todos los testamentos</option>
+                <option value="antiguo">Antiguo Testamento</option>
+                <option value="nuevo">Nuevo Testamento</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-label block text-sm font-medium mb-2">📖 Libro</label>
+              <select id="book-select" class="filter-select w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Todos los libros</option>
+                <optgroup label="Antiguo Testamento">
+                  <option value="Génesis">Génesis</option>
+                  <option value="Éxodo">Éxodo</option>
+                  <option value="Levítico">Levítico</option>
+                  <option value="Números">Números</option>
+                  <option value="Deuteronomio">Deuteronomio</option>
+                  <option value="Josué">Josué</option>
+                  <option value="Jueces">Jueces</option>
+                  <option value="Rut">Rut</option>
+                  <option value="1 Samuel">1 Samuel</option>
+                  <option value="2 Samuel">2 Samuel</option>
+                  <option value="1 Reyes">1 Reyes</option>
+                  <option value="2 Reyes">2 Reyes</option>
+                  <option value="1 Crónicas">1 Crónicas</option>
+                  <option value="2 Crónicas">2 Crónicas</option>
+                  <option value="Esdras">Esdras</option>
+                  <option value="Nehemías">Nehemías</option>
+                  <option value="Ester">Ester</option>
+                  <option value="Job">Job</option>
+                  <option value="Salmos">Salmos</option>
+                  <option value="Proverbios">Proverbios</option>
+                  <option value="Eclesiastés">Eclesiastés</option>
+                  <option value="Cantares">Cantares</option>
+                  <option value="Isaías">Isaías</option>
+                  <option value="Jeremías">Jeremías</option>
+                  <option value="Lamentaciones">Lamentaciones</option>
+                  <option value="Ezequiel">Ezequiel</option>
+                  <option value="Daniel">Daniel</option>
+                  <option value="Oseas">Oseas</option>
+                  <option value="Joel">Joel</option>
+                  <option value="Amós">Amós</option>
+                  <option value="Abdías">Abdías</option>
+                  <option value="Jonás">Jonás</option>
+                  <option value="Miqueas">Miqueas</option>
+                  <option value="Nahúm">Nahúm</option>
+                  <option value="Habacuc">Habacuc</option>
+                  <option value="Sofonías">Sofonías</option>
+                  <option value="Hageo">Hageo</option>
+                  <option value="Zacarías">Zacarías</option>
+                  <option value="Malaquías">Malaquías</option>
+                </optgroup>
+                <optgroup label="Nuevo Testamento">
+                  <option value="Mateo">Mateo</option>
+                  <option value="Marcos">Marcos</option>
+                  <option value="Lucas">Lucas</option>
+                  <option value="Juan">Juan</option>
+                  <option value="Hechos">Hechos</option>
+                  <option value="Romanos">Romanos</option>
+                  <option value="1 Corintios">1 Corintios</option>
+                  <option value="2 Corintios">2 Corintios</option>
+                  <option value="Gálatas">Gálatas</option>
+                  <option value="Efesios">Efesios</option>
+                  <option value="Filipenses">Filipenses</option>
+                  <option value="Colosenses">Colosenses</option>
+                  <option value="1 Tesalonicenses">1 Tesalonicenses</option>
+                  <option value="2 Tesalonicenses">2 Tesalonicenses</option>
+                  <option value="1 Timoteo">1 Timoteo</option>
+                  <option value="2 Timoteo">2 Timoteo</option>
+                  <option value="Tito">Tito</option>
+                  <option value="Filemón">Filemón</option>
+                  <option value="Hebreos">Hebreos</option>
+                  <option value="Santiago">Santiago</option>
+                  <option value="1 Pedro">1 Pedro</option>
+                  <option value="2 Pedro">2 Pedro</option>
+                  <option value="1 Juan">1 Juan</option>
+                  <option value="2 Juan">2 Juan</option>
+                  <option value="3 Juan">3 Juan</option>
+                  <option value="Judas">Judas</option>
+                  <option value="Apocalipsis">Apocalipsis</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-label block text-sm font-medium mb-2">🎯 Tema</label>
+              <select id="theme-filter" class="filter-select w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Todos los temas</option>
+                <option value="amor">💝 Amor</option>
+                <option value="fortaleza">💪 Fortaleza</option>
+                <option value="fe">🙏 Fe</option>
+                <option value="esperanza">🌅 Esperanza</option>
+                <option value="oración">🤲 Oración</option>
+                <option value="paz">🕊️ Paz</option>
+                <option value="valor">⚔️ Valor</option>
+                <option value="provisión">🌱 Provisión</option>
+                <option value="protección">🛡️ Protección</option>
+                <option value="pureza">✨ Pureza</option>
+                <option value="prioridades">🎯 Prioridades</option>
+                <option value="confianza">🤝 Confianza</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sugerencias de búsqueda -->
+          <div id="search-suggestions" class="search-suggestions mb-6" style="display: none;">
+            <div class="suggestions-header flex items-center space-x-2 mb-3">
+              <span class="suggestions-icon">💡</span>
+              <span class="font-medium">Sugerencias rápidas</span>
+            </div>
+            <div id="suggestions-list" class="suggestions-list flex flex-wrap gap-2">
+              <button onclick="quickSearch('Juan 3:16')" class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                Juan 3:16
+              </button>
+              <button onclick="quickSearch('Salmos 23')" class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                Salmos 23
+              </button>
+              <button onclick="quickSearch('amor')" class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                amor
+              </button>
+              <button onclick="quickSearch('fe')" class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                fe
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultados de búsqueda -->
+        <div id="search-results" class="search-results mt-6">
+          <div class="results-placeholder text-center py-12">
+            <div class="placeholder-icon text-6xl mb-4">📚</div>
+            <h3 class="text-xl font-bold mb-2">¿Qué buscas hoy?</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Ingresa palabras clave, referencias bíblicas o temas para encontrar versículos inspiradores</p>
+            <div class="quick-examples flex flex-wrap justify-center gap-2">
+              <span class="example-tag px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-full cursor-pointer transition-colors" onclick="quickSearch('amor')">💝 Amor</span>
+              <span class="example-tag px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-full cursor-pointer transition-colors" onclick="quickSearch('fe')">🙏 Fe</span>
+              <span class="example-tag px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-full cursor-pointer transition-colors" onclick="quickSearch('fortaleza')">💪 Fortaleza</span>
+              <span class="example-tag px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-full cursor-pointer transition-colors" onclick="quickSearch('paz')">🕊️ Paz</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid de libros de la Biblia -->
+    <section class="books-section mb-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <div>
+          <h2 class="text-2xl font-bold flex items-center mb-2">
+            <span class="mr-3 animate-float">📚</span> Libros de la Biblia
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400">Haz clic en cualquier libro para comenzar a leer</p>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Barra de búsqueda de libros -->
+          <div class="relative">
+            <input type="text" 
+                   id="book-search" 
+                   class="w-full md:w-64 px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                   placeholder="Buscar libro...">
+            <span class="absolute left-3 top-2.5 text-gray-500">🔍</span>
+          </div>
+          
+          <!-- Ordenar libros -->
+          <div class="relative">
+            <select id="sort-books" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary appearance-none pr-8">
+              <option value="default">Orden: Por defecto</option>
+              <option value="progress">Progreso (mayor a menor)</option>
+              <option value="alphabetical">A-Z</option>
+              <option value="chapters">Capítulos</option>
+              <option value="recent">Recientes</option>
+            </select>
+            <div class="absolute right-3 top-2.5 pointer-events-none">▼</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tabs de testamento -->
+      <div class="testament-tabs mb-6 flex space-x-2">
+        <button class="tab-btn active px-6 py-2 rounded-xl font-medium transition-colors bg-primary text-white hover:bg-primary-dark" onclick="mostrarTestamento('AT')">Antiguo Testamento</button>
+        <button class="tab-btn px-6 py-2 rounded-xl font-medium transition-colors bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200" onclick="mostrarTestamento('NT')">Nuevo Testamento</button>
+      </div>
+      
+      <!-- Indicadores visuales -->
+      <div class="mb-4">
+        <div class="flex items-center space-x-4 text-sm">
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+            <span>Completado</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+            <span>En progreso</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-gray-300 dark:bg-gray-700 rounded-full mr-2"></div>
+            <span>No iniciado</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contador y progreso general -->
+      <div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center space-x-4">
+            <span class="text-gray-600 dark:text-gray-400">
+              Mostrando <span id="books-displayed" class="font-bold text-primary">39</span> de 66 libros
+            </span>
+            <div class="hidden md:block">
+              <span class="text-sm text-gray-500">Progreso total:</span>
+              <span class="ml-2 font-bold text-primary" id="overall-progress">0%</span>
+            </div>
+          </div>
+          <button onclick="toggleViewMode()" id="view-toggle" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center space-x-2">
+            <span>📊</span>
+            <span>Vista lista</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Grid de libros -->
+      <div id="books-container">
+        <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <!-- Los libros se cargarán dinámicamente aquí -->
+        </div>
+        
+        <!-- Vista de lista (alternativa) -->
+        <div id="books-list" class="hidden space-y-2">
+          <!-- Los libros en vista de lista se cargarán aquí -->
+        </div>
+      </div>
+      
+      <!-- Mensaje cuando no hay resultados -->
+      <div id="no-results" class="hidden text-center py-12">
+        <div class="text-4xl mb-4">🔍</div>
+        <h3 class="text-xl font-bold mb-2">No se encontraron libros</h3>
+        <p class="text-gray-600 dark:text-gray-400">Intenta con otro término de búsqueda</p>
+      </div>
+    </section>
+
+    <!-- Sección de favoritos -->
+    <section id="favorites-section" class="mb-10" style="display: none;">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+        <h2 class="text-2xl font-bold mb-6">❤️ Versículos Favoritos</h2>
+        <div id="favorites-list" class="verses-list">
+          <p class="empty-state text-center py-12 text-gray-600 dark:text-gray-400">No tienes versículos favoritos aún. ¡Agrega algunos!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección de quiz -->
+    <section id="quiz-section" class="mb-10" style="display: none;">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+        <h2 class="text-2xl font-bold mb-6">🧠 Quiz Bíblico</h2>
+        <div id="quiz-content">
+          <p class="mb-4 text-gray-600 dark:text-gray-400">¿Listo para el desafío? Responde preguntas sobre la Biblia y gana puntos!</p>
+          <button onclick="startQuizGame()" class="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors">
+            Comenzar Quiz
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección de estadísticas -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-6 flex items-center">
+        <span class="mr-3 animate-pulse-slow">📊</span> Tu Progreso Bíblico
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group hover:scale-105 transition-transform duration-300">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:animate-book-pulse">
+              <span class="text-2xl text-blue-600 dark:text-blue-400">📖</span>
+            </div>
+            <div>
+              <div id="verses-read" class="text-2xl font-bold">0</div>
+              <div class="text-sm text-gray-500">Versículos leídos</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group hover:scale-105 transition-transform duration-300">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:animate-book-pulse">
+              <span class="text-2xl text-green-600 dark:text-green-400">⭐</span>
+            </div>
+            <div>
+              <div id="favorites-count" class="text-2xl font-bold">0</div>
+              <div class="text-sm text-gray-500">Favoritos</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group hover:scale-105 transition-transform duration-300">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:animate-book-pulse">
+              <span class="text-2xl text-purple-600 dark:text-purple-400">📅</span>
+            </div>
+            <div>
+              <div id="reading-days" class="text-2xl font-bold">0</div>
+              <div class="text-sm text-gray-500">Días leyendo</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group hover:scale-105 transition-transform duration-300">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center group-hover:animate-book-pulse">
+              <span class="text-2xl text-amber-600 dark:text-amber-400">🏆</span>
+            </div>
+            <div>
+              <div id="books-completed" class="text-2xl font-bold">0</div>
+              <div class="text-sm text-gray-500">Libros completados</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/script.js"></script>
+  <script src="js/biblia.js"></script>
+  <script src="js/1960.js"></script>
+  <script>
+    // Variables globales
+    let currentBook = null;
+    let currentChapter = 1;
+    let currentTestament = 'AT';
+    let viewMode = 'grid'; // 'grid' o 'list'
+    let currentSort = 'default';
+    
+    // Inicialización cuando el DOM esté cargado
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Biblia RVR1960 - Cargando...');
+      
+      // Inicializar tema oscuro/claro
+      initTheme();
+      
+      // Inicializar menú móvil
+      initMobileMenu();
+      
+      // Cargar versículo del día
+      if (typeof loadRandomVerse === 'function') {
+        loadRandomVerse();
+      }
+      
+      // Cargar estadísticas
+      loadStats();
+      
+      // Cargar libros iniciales (Antiguo Testamento por defecto)
+      // Esperar a que biblia esté disponible
+      setTimeout(() => {
+        if (typeof mostrarTestamento === 'function') {
+          mostrarTestamento('AT');
+        } else if (typeof window.biblia !== 'undefined' && window.biblia) {
+          // Si biblia está disponible pero mostrarTestamento no, intentar cargar directamente
+          cargarLibrosInterfaz();
+        }
+      }, 100);
+      
+      // Configurar event listeners
+      setupEventListeners();
+      
+      // Mantener compatibilidad con funciones existentes
+      if (typeof initBibliaFunctions === 'function') {
+        initBibliaFunctions();
+      }
+    });
+    
+    // Inicializar tema
+    function initTheme() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+      
+      // Cargar tema guardado
+      if (localStorage.getItem('theme') === 'dark' || 
+          (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+      }
+      
+      if (mobileThemeToggle) {
+        mobileThemeToggle.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+      }
+    }
+    
+    // Inicializar menú móvil
+    function initMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+      
+      if (!mobileMenu) return;
+      
+      function openMobileMenu() {
+        mobileMenu.classList.remove('hidden');
+        setTimeout(() => {
+          const menuPanel = mobileMenu.querySelector('.absolute.right-0');
+          if (menuPanel) {
+            menuPanel.classList.remove('translate-x-full');
+          }
+        }, 50);
+      }
+      
+      function closeMobileMenu() {
+        const menuPanel = mobileMenu.querySelector('.absolute.right-0');
+        if (menuPanel) {
+          menuPanel.classList.add('translate-x-full');
+        }
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+      }
+      
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+      }
+      if (mobileMenuClose) {
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+      }
+      if (mobileMenuBackdrop) {
+        mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+      }
+    }
+    
+    // Cargar estadísticas
+    function loadStats() {
+      try {
+        const stats = JSON.parse(localStorage.getItem('bibleStats') || '{}');
+        
+        // Versículos leídos
+        const versesRead = Object.values(stats).reduce((total, book) => {
+          return total + (book.versesRead || 0);
+        }, 0);
+        const versesReadEl = document.getElementById('verses-read');
+        const statsVersesEl = document.getElementById('stats-verses');
+        if (versesReadEl) versesReadEl.textContent = versesRead.toLocaleString();
+        if (statsVersesEl) statsVersesEl.textContent = versesRead.toLocaleString();
+        
+        // Favoritos
+        const favorites = JSON.parse(localStorage.getItem('versiculosFavoritos') || '[]');
+        const favoritesCountEl = document.getElementById('favorites-count');
+        if (favoritesCountEl) favoritesCountEl.textContent = favorites.length;
+        
+        // Días leyendo
+        const readingDays = Object.keys(JSON.parse(localStorage.getItem('readingDays') || '{}')).length;
+        const readingDaysEl = document.getElementById('reading-days');
+        if (readingDaysEl) readingDaysEl.textContent = readingDays;
+        
+        // Libros completados
+        const booksCompleted = Object.values(stats).filter(book => book.completed).length;
+        const booksCompletedEl = document.getElementById('books-completed');
+        if (booksCompletedEl) booksCompletedEl.textContent = booksCompleted;
+        
+        // Calcular progreso
+        const totalVerses = 31102; // Total aproximado de versículos en la Biblia
+        const progress = Math.min(Math.round((versesRead / totalVerses) * 100), 100);
+        const readingProgressEl = document.getElementById('reading-progress');
+        const progressBarEl = document.getElementById('progress-bar');
+        if (readingProgressEl) readingProgressEl.textContent = `${progress}%`;
+        if (progressBarEl) progressBarEl.style.width = `${progress}%`;
+        
+        // Calcular progreso general de libros
+        updateOverallProgress();
+      } catch (e) {
+        console.error('Error cargando estadísticas:', e);
+      }
+    }
+    
+    // Actualizar progreso general
+    function updateOverallProgress() {
+      try {
+        if (typeof window.biblia === 'undefined' || !window.biblia || !window.biblia.libros) {
+          return;
+        }
+        
+        const stats = JSON.parse(localStorage.getItem('bibleStats') || '{}');
+        let totalProgress = 0;
+        let bookCount = 0;
+        
+        window.biblia.libros.forEach(libro => {
+          const bookStats = stats[libro.nombre] || {};
+          const readChapters = bookStats.readChapters || [];
+          const progress = libro.cap > 0 ? Math.round((readChapters.length / libro.cap) * 100) : 0;
+          totalProgress += progress;
+          bookCount++;
+        });
+        
+        const overallProgress = bookCount > 0 ? Math.round(totalProgress / bookCount) : 0;
+        const overallProgressEl = document.getElementById('overall-progress');
+        if (overallProgressEl) overallProgressEl.textContent = `${overallProgress}%`;
+      } catch (e) {
+        console.error('Error actualizando progreso general:', e);
+      }
+    }
+    
+    // Alternar modo de vista
+    function toggleViewMode() {
+      const toggleBtn = document.getElementById('view-toggle');
+      const booksGrid = document.getElementById('books-grid');
+      const booksList = document.getElementById('books-list');
+      
+      if (!booksGrid || !booksList) return;
+      
+      if (viewMode === 'grid') {
+        viewMode = 'list';
+        if (toggleBtn) toggleBtn.innerHTML = '<span>📊</span><span>Vista cuadrícula</span>';
+        booksGrid.classList.add('hidden');
+        booksList.classList.remove('hidden');
+      } else {
+        viewMode = 'grid';
+        if (toggleBtn) toggleBtn.innerHTML = '<span>📊</span><span>Vista lista</span>';
+        booksList.classList.add('hidden');
+        booksGrid.classList.remove('hidden');
+      }
+      
+      // Guardar preferencia
+      localStorage.setItem('bibleViewMode', viewMode);
+    }
+    
+    // Configurar event listeners
+    function setupEventListeners() {
+      // Buscar al presionar Enter
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            if (typeof realizarBusquedaAvanzada === 'function') {
+              realizarBusquedaAvanzada();
+            }
+          }
+        });
+      }
+      
+      // Búsqueda en tiempo real para libros
+      const bookSearch = document.getElementById('book-search');
+      if (bookSearch) {
+        bookSearch.addEventListener('input', function() {
+          if (typeof filterBooks === 'function') {
+            filterBooks();
+          }
+        });
+      }
+      
+      // Ordenar libros
+      const sortSelect = document.getElementById('sort-books');
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+          currentSort = this.value;
+          if (typeof mostrarTestamento === 'function') {
+            mostrarTestamento(currentTestament);
+          }
+        });
+      }
+      
+      // Cargar preferencia de vista
+      const savedViewMode = localStorage.getItem('bibleViewMode');
+      if (savedViewMode && (savedViewMode === 'grid' || savedViewMode === 'list')) {
+        viewMode = savedViewMode;
+        if (viewMode === 'list') {
+          const toggleBtn = document.getElementById('view-toggle');
+          if (toggleBtn) {
+            toggleBtn.innerHTML = '<span>📊</span><span>Vista cuadrícula</span>';
+          }
+        }
+      }
+    }
+    
+    // Hacer funciones disponibles globalmente
+    window.toggleViewMode = toggleViewMode;
+    window.loadStats = loadStats;
+    window.updateOverallProgress = updateOverallProgress;
+  </script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(registration) {
+          console.log('Service Worker registrado con éxito:', registration.scope);
+
+          // Escuchar por actualizaciones del service worker
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // Nueva versión disponible
+                if (confirm('Hay una nueva versión disponible. ¿Quieres actualizar?')) {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch(function(error) {
+          console.log('Error al registrar el Service Worker:', error);
+        });
+    });
+
+    // Escuchar cambios en el service worker
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      window.location.reload();
+    });
+  }
+
+  // Detectar si estamos en modo standalone (PWA instalada)
+  if (window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true) {
+    console.log('Ejecutándose en modo PWA');
+    // Aquí puedes agregar lógica específica para cuando la app está instalada
+  }
+
+  // Solicitar permisos para notificaciones (opcional)
+  if ('Notification' in window && navigator.serviceWorker) {
+    if (Notification.permission === 'default') {
+      // Puedes mostrar un botón para solicitar permisos más tarde
+      console.log('Notificaciones disponibles pero no solicitadas aún');
+    }
+  }
+</script>
+</body>
+</html>

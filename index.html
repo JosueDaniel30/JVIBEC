@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio | App Jóvenes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicación para jóvenes cristianos - metas espirituales, biblia y crecimiento personal">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="json/manifest.json">
+  <link rel="apple-touch-icon" href="assets/logojov.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/notificacion.css">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuración personalizada -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#4f46e5', light: '#818cf8', dark: '#3730a3' },
+            secondary: { DEFAULT: '#10b981', light: '#34d399', dark: '#059669' },
+            accent: { DEFAULT: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+            'display': ['Poppins', 'sans-serif']
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- CSS personalizado mínimo -->
+  <style>
+    :root { --primary: #4f46e5; --secondary: #10b981; }
+    .font-display { font-family: 'Poppins', sans-serif; }
+    .font-serif { font-family: 'Merriweather', serif; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .prose { max-width: 65ch; }
+    .logo-icon { width: 100%; height: 100%; object-fit: contain; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
+
+<script>
+  // Check if user is logged in
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  if (!currentUser) {
+    window.location.href = 'login.html';
+  }
+</script>
+
+  <!-- Navegación principal -->
+  <header class="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center space-x-3 group">
+          <div class="w-10 h-10 bg-gradient-to-br from-primary to-primary-light rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+            <img src="assets/logojov.png" alt="Logo Jovenes" class="logo-icon">
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-xl bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+              Jovenes con Cristo
+            </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Tu camino espiritual</p>
+          </div>
+        </a>
+
+        <!-- Navegación desktop -->
+        <nav class="hidden md:flex items-center space-x-1">
+          <a href="index.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary/10 text-primary font-semibold">
+            <span class="text-lg">🏠</span>
+            <span>Inicio</span>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">👤</span>
+            <span>Perfil</span>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">📖</span>
+            <span>Biblia</span>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">🎯</span>
+            <span>Metas</span>
+          </a>
+        </nav>
+
+        <!-- Acciones -->
+        <div class="flex items-center space-x-3">
+          <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg dark:hidden">🌙</span>
+            <span class="text-lg hidden dark:inline">☀️</span>
+          </button>
+          <button id="logout-btn" class="hidden md:inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors">
+            <span>🚪</span>
+            <span class="text-sm font-medium">Salir</span>
+          </button>
+          <button class="md:hidden p-2" id="mobile-menu-btn">
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" id="mobile-menu-backdrop"></div>
+    <div class="absolute inset-y-0 right-0 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 translate-x-full">
+      <div class="p-6 h-full flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+          <h3 class="text-xl font-bold">Menú</h3>
+          <button id="mobile-menu-close" class="p-2 text-2xl">×</button>
+        </div>
+        <nav class="space-y-2 flex-1">
+          <a href="index.html" class="flex items-center space-x-4 p-4 rounded-xl bg-primary/10 text-primary">
+            <span class="text-2xl">🏠</span>
+            <div>
+              <div class="font-semibold">Inicio</div>
+              <div class="text-sm text-primary/70">Página principal</div>
+            </div>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">👤</span>
+            <div>
+              <div class="font-semibold">Perfil</div>
+              <div class="text-sm text-gray-500">Tu progreso</div>
+            </div>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">📖</span>
+            <div>
+              <div class="font-semibold">Biblia</div>
+              <div class="text-sm text-gray-500">Palabra de Dios</div>
+            </div>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">🎯</span>
+            <div>
+              <div class="font-semibold">Metas</div>
+              <div class="text-sm text-gray-500">Objetivos espirituales</div>
+            </div>
+          </a>
+        </nav>
+        <div class="pt-6 border-t border-gray-200 dark:border-gray-800">
+          <button id="mobile-theme-toggle" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl mb-3">
+            <span class="mobile-theme-icon">🌙</span>
+            <span class="font-medium mobile-theme-text">Tema Oscuro</span>
+          </button>
+          <button id="mobile-logout" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl">
+            <span>🚪</span>
+            <span class="font-medium">Cerrar sesión</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <main class="container mx-auto px-4 py-8">
+    
+    <!-- Sección de bienvenida -->
+    <section class="mb-10">
+      <div class="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-8 md:p-12">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="flex-1">
+            <h1 id="welcome-title" class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              ¡Bienvenido de nuevo!
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+              Hoy es un nuevo día para crecer en tu fe y acercarte más a Dios.
+            </p>
+            <div class="flex flex-wrap gap-3 mb-6">
+              <span id="current-date" class="px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium shadow-sm">
+                📅 Cargando fecha...
+              </span>
+              <span id="motivational-quote" class="px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium shadow-sm">
+                💫 Tu versículo especial hoy
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button onclick="loadVerse()" class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors">
+                ✨ Ver versículo del día
+              </button>
+              <a href="biblia.html" class="px-5 py-2.5 border-2 border-primary text-primary hover:bg-primary/5 font-semibold rounded-xl transition-colors">
+                📖 Abrir Biblia
+              </a>
+            </div>
+          </div>
+          <div class="flex-shrink-0">
+            <div class="relative">
+              <div class="w-48 h-48 md:w-64 md:h-64 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center shadow-2xl">
+                <div class="text-center">
+                  <div class="text-6xl mb-4">🙏</div>
+                  <div class="text-white font-bold text-2xl" id="streak-count">0</div>
+                  <div class="text-white/90">días de racha</div>
+                </div>
+              </div>
+              <div class="absolute -top-2 -right-2 w-16 h-16 bg-accent rounded-full flex items-center justify-center shadow-lg animate-pulse-slow">
+                <span class="text-2xl">🔥</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Estadísticas rápidas -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-6">📊 Tu Progreso Espiritual</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl text-blue-600 dark:text-blue-400">📚</span>
+            </div>
+            <div>
+              <div id="verses-read" class="text-2xl font-bold">0</div>
+              <div class="text-sm text-gray-500">Versículos leídos</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl text-green-600 dark:text-green-400">🎯</span>
+            </div>
+            <div>
+              <div id="goals-completed" class="text-2xl font-bold">0</div>
+              <div class="text-sm text-gray-500">Metas completadas</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl text-purple-600 dark:text-purple-400">🙏</span>
+            </div>
+            <div>
+              <div id="prayer-streak" class="text-2xl font-bold">0</div>
+              <div class="text-sm text-gray-500">Días orando</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl text-amber-600 dark:text-amber-400">🏆</span>
+            </div>
+            <div>
+              <div id="level" class="text-2xl font-bold">1</div>
+              <div class="text-sm text-gray-500">Nivel espiritual</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Check-in diario y versículo -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <!-- Check-in diario -->
+      <section class="bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl p-6 border border-secondary/20">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold flex items-center">
+            <span class="mr-2">✅</span> Check-in Diario
+          </h3>
+          <span class="px-3 py-1 bg-white dark:bg-gray-800 rounded-full text-sm font-medium">
+            Hoy
+          </span>
+        </div>
+        
+        <p class="text-gray-600 dark:text-gray-300 mb-6">
+          Completa tus hábitos espirituales diarios para mantener tu racha y ganar recompensas.
+        </p>
+        
+        <div class="space-y-4 mb-6">
+          <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <span class="text-green-600 dark:text-green-400">📖</span>
+              </div>
+              <span>Leer versículo del día</span>
+            </div>
+            <div id="verse-check" class="w-6 h-6 border-2 border-gray-300 rounded-full"></div>
+          </div>
+          
+          <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <span class="text-blue-600 dark:text-blue-400">🙏</span>
+              </div>
+              <span>Tiempo de oración</span>
+            </div>
+            <div id="prayer-check" class="w-6 h-6 border-2 border-gray-300 rounded-full"></div>
+          </div>
+        </div>
+        
+        <button id="checkin-btn" class="w-full py-3.5 bg-gradient-to-r from-secondary to-secondary-light hover:from-secondary-dark hover:to-secondary-dark text-white font-semibold rounded-xl transition-all hover:shadow-lg flex items-center justify-center space-x-2">
+          <span class="text-xl">✨</span>
+          <span>Marcar check-in completo</span>
+        </button>
+        
+        <div class="mt-4 text-center text-sm text-gray-500" id="checkin-status">
+          <span class="inline-flex items-center">
+            <span class="mr-2">⏳</span>
+            Pendiente por hoy
+          </span>
+        </div>
+      </section>
+
+      <!-- Versículo del día -->
+      <section class="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl p-6 border border-primary/20">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold flex items-center">
+            <span class="mr-2">📖</span> Versículo del Día
+          </h3>
+          <div class="flex space-x-2">
+            <button onclick="loadVerse()" class="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors" title="Recargar versículo">
+              <span>🔄</span>
+            </button>
+            <button onclick="copyVerse()" class="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors" title="Copiar versículo">
+              <span>📋</span>
+            </button>
+            <button onclick="shareVerse()" class="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors" title="Compartir versículo">
+              <span>📤</span>
+            </button>
+          </div>
+        </div>
+        
+        <blockquote id="verse-text" class="font-serif text-xl text-gray-800 dark:text-gray-100 italic mb-4 leading-relaxed">
+          "Todo lo puedo en Cristo que me fortalece."
+        </blockquote>
+        
+        <div class="flex items-center justify-between mb-4">
+          <cite id="verse-ref" class="font-semibold text-primary dark:text-primary-light">
+            Filipenses 4:13
+          </cite>
+          <span id="verse-theme" class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+            FORTALEZA
+          </span>
+        </div>
+        
+        <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Estado de lectura:</span>
+            <span id="verse-status" class="inline-flex items-center text-amber-600 dark:text-amber-400">
+              <span class="mr-1">⏳</span>
+              Pendiente por leer
+            </span>
+          </div>
+          <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div class="bg-primary h-2 rounded-full" style="width: 0%"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tiempo de oración -->
+    <section class="mb-10">
+      <div class="bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl p-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex-1">
+            <h3 class="text-2xl font-bold mb-2">🙏 Tiempo de Oración</h3>
+            <p class="text-gray-300 mb-6">
+              Dedica unos minutos a conversar con Dios. Cada momento en oración fortalece tu espíritu.
+            </p>
+            
+            <div class="flex items-center space-x-4 mb-6">
+              <div class="flex-1">
+                <div class="flex justify-between text-sm mb-1">
+                  <span>Meta diaria</span>
+                  <span>5 minutos</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                  <div class="bg-secondary h-2 rounded-full" style="width: 30%"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-3">
+              <button id="start-prayer-btn" onclick="startTimer()" class="px-5 py-3 bg-white hover:bg-gray-100 text-gray-900 font-semibold rounded-xl transition-colors flex items-center space-x-2">
+                <span>⏱️</span>
+                <span>Iniciar temporizador</span>
+              </button>
+              <button onclick="stopTimer()" id="stop-prayer-btn" class="px-5 py-3 bg-white/10 hover:bg-white/20 font-medium rounded-xl transition-colors hidden">
+                Detener temporizador
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex-shrink-0">
+            <div class="relative">
+              <div class="w-40 h-40 bg-white/10 rounded-2xl flex flex-col items-center justify-center">
+                <div id="timer-minutes" class="text-5xl font-bold">05</div>
+                <div class="text-gray-300">minutos</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recordatorios motivacionales -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">💫 Inspiración para Hoy</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6">
+          <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">💪</span>
+          </div>
+          <h4 class="font-bold text-lg mb-2">Fe en Acción</h4>
+          <p class="text-gray-600 dark:text-gray-300">
+            La fe sin obras está muerta. Hoy, pon en práctica lo que crees.
+          </p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6">
+          <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">🌅</span>
+          </div>
+          <h4 class="font-bold text-lg mb-2">Nuevos Comienzos</h4>
+          <p class="text-gray-600 dark:text-gray-300">
+            Sus misericordias son nuevas cada mañana. Hoy es una nueva oportunidad.
+          </p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6">
+          <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">🎉</span>
+          </div>
+          <h4 class="font-bold text-lg mb-2">Celebra el Progreso</h4>
+          <p class="text-gray-600 dark:text-gray-300">
+            Cada pequeño paso en tu fe es una victoria digna de celebrar.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Llamado a la acción -->
+    <section class="text-center py-10">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold mb-4">¿Listo para profundizar?</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+          Explora todas las herramientas que tenemos para tu crecimiento espiritual.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="biblia.html" class="px-6 py-3.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors flex items-center space-x-2">
+            <span>📖</span>
+            <span>Explorar la Biblia</span>
+          </a>
+          <a href="metas.html" class="px-6 py-3.5 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-2 border-primary text-primary font-semibold rounded-xl transition-colors flex items-center space-x-2">
+            <span>🎯</span>
+            <span>Ver mis Metas</span>
+          </a>
+          <a href="perfil.html" class="px-6 py-3.5 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-2 border-secondary text-secondary font-semibold rounded-xl transition-colors flex items-center space-x-2">
+            <span>📈</span>
+            <span>Mi Progreso</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- Scripts -->
+  <script src="js/script.js"></script>
+  <script>
+    // Actualizar título de bienvenida con el nombre del usuario
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      const welcomeTitle = document.getElementById('welcome-title');
+      
+      if (currentUser && currentUser.name) {
+        welcomeTitle.textContent = `¡Hola, ${currentUser.name}! 👋`;
+      } else {
+        welcomeTitle.textContent = '¡Bienvenido de nuevo!';
+      }
+
+      // Mostrar notificación de bienvenida si acaba de hacer login
+      if (sessionStorage.getItem('justLoggedIn') === 'true') {
+        const userName = currentUser?.name || currentUser?.username || 'Usuario';
+        
+        // Emoji dinámico según la hora del día
+        const hour = new Date().getHours();
+        let emoji = '👋';
+        if (hour >= 5 && hour < 12) emoji = '☀️'; // Mañana
+        else if (hour >= 12 && hour < 18) emoji = '🌤️'; // Tarde
+        else if (hour >= 18 && hour < 22) emoji = '🌙'; // Noche
+        else emoji = '⭐'; // Madrugada
+        
+        setTimeout(() => {
+          if (typeof showNotification === 'function') {
+            showNotification(`¡Bienvenido, ${userName}!`, emoji);
+          }
+        }, 500);
+        sessionStorage.removeItem('justLoggedIn');
+      }
+    });
+
+    // Logout functionality
+    document.getElementById('logout-btn')?.addEventListener('click', function() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'login.html';
+    });
+
+    // Logout móvil
+    document.getElementById('mobile-logout')?.addEventListener('click', function() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'login.html';
+    });
+
+    // Menú móvil
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+    const mobileMenuPanel = mobileMenu?.querySelector('.absolute.inset-y-0.right-0');
+
+    if (mobileMenuBtn && mobileMenu && mobileMenuPanel) {
+      mobileMenuBtn.addEventListener('click', function() {
+        mobileMenu.classList.remove('hidden');
+        setTimeout(() => {
+          mobileMenuPanel.classList.remove('translate-x-full');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+      });
+
+      function closeMobileMenu() {
+        mobileMenuPanel.classList.add('translate-x-full');
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+          document.body.style.overflow = '';
+        }, 300);
+      }
+
+      if (mobileMenuClose) {
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+      }
+
+      if (mobileMenuBackdrop) {
+        mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+      }
+
+      // Cerrar al hacer clic en un enlace
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    // Tema oscuro con Tailwind
+    const themeToggle = document.getElementById('theme-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      
+      // Actualizar iconos del botón principal
+      const themeToggleSpans = themeToggle?.querySelectorAll('span');
+      if (themeToggleSpans) {
+        themeToggleSpans.forEach(span => {
+          if (span.classList.contains('dark:hidden')) {
+            span.style.display = isDark ? 'none' : 'inline';
+          } else if (span.classList.contains('hidden') && span.classList.contains('dark:inline')) {
+            span.style.display = isDark ? 'inline' : 'none';
+          }
+        });
+      }
+      
+      // Actualizar iconos y texto del menú móvil
+      const mobileThemeIcon = document.querySelector('.mobile-theme-icon');
+      const mobileThemeText = document.querySelector('.mobile-theme-text');
+      
+      if (mobileThemeIcon) {
+        mobileThemeIcon.textContent = isDark ? '☀️' : '🌙';
+      }
+      
+      if (mobileThemeText) {
+        mobileThemeText.textContent = isDark ? 'Tema Claro' : 'Tema Oscuro';
+      }
+      
+      // Llamar a la función toggleTheme del script.js si existe
+      if (typeof toggleTheme === 'function') {
+        toggleTheme();
+      }
+    }
+
+    // Cargar tema guardado
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else if (savedTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleDarkMode);
+    }
+
+    if (mobileThemeToggle) {
+      mobileThemeToggle.addEventListener('click', toggleDarkMode);
+    }
+
+    // Actualizar iconos de tema al cargar
+    const isDark = document.documentElement.classList.contains('dark');
+    const themeToggleSpans = themeToggle?.querySelectorAll('span');
+    if (themeToggleSpans) {
+      themeToggleSpans.forEach(span => {
+        if (span.classList.contains('dark:hidden')) {
+          span.style.display = isDark ? 'none' : 'inline';
+        } else if (span.classList.contains('hidden') && span.classList.contains('dark:inline')) {
+          span.style.display = isDark ? 'inline' : 'none';
+        }
+      });
+    }
+    
+    const mobileThemeIcon = document.querySelector('.mobile-theme-icon');
+    const mobileThemeText = document.querySelector('.mobile-theme-text');
+    
+    if (mobileThemeIcon) {
+      mobileThemeIcon.textContent = isDark ? '☀️' : '🌙';
+    }
+    
+    if (mobileThemeText) {
+      mobileThemeText.textContent = isDark ? 'Tema Claro' : 'Tema Oscuro';
+    }
+  </script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(registration) {
+          console.log('Service Worker registrado con éxito:', registration.scope);
+
+          // Escuchar por actualizaciones del service worker
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // Nueva versión disponible
+                if (confirm('Hay una nueva versión disponible. ¿Quieres actualizar?')) {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch(function(error) {
+          console.log('Error al registrar el Service Worker:', error);
+        });
+    });
+
+    // Escuchar cambios en el service worker
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      window.location.reload();
+    });
+  }
+
+  // Detectar si estamos en modo standalone (PWA instalada)
+  if (window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true) {
+    console.log('Ejecutándose en modo PWA');
+    // Aquí puedes agregar lógica específica para cuando la app está instalada
+  }
+
+  // Solicitar permisos para notificaciones (opcional)
+  if ('Notification' in window && navigator.serviceWorker) {
+    if (Notification.permission === 'default') {
+      // Puedes mostrar un botón para solicitar permisos más tarde
+      console.log('Notificaciones disponibles pero no solicitadas aún');
+    }
+  }
+</script>
+</body>
+</html>

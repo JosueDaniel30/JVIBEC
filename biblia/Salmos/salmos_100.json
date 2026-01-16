@@ -1,0 +1,27 @@
+{
+  "book": "Salmos",
+  "chapter": 100,
+  "version": "RVR1960",
+  "verses": [
+    {
+      "verse": 1,
+      "text": "Cantad alegres a Dios, habitantes de toda la tierra."
+    },
+    {
+      "verse": 2,
+      "text": "Servid a Jehová con alegría; /nVenid ante su presencia con regocijo."
+    },
+    {
+      "verse": 3,
+      "text": "Reconoced que Jehová es Dios; /nEl nos hizo, y no nosotros a nosotros mismos; /nPueblo suyo somos, y ovejas de su prado."
+    },
+    {
+      "verse": 4,
+      "text": "Entrad por sus puertas con acción de gracias, /nPor sus atrios con alabanza; /nAlabadle, bendecid su nombre."
+    },
+    {
+      "verse": 5,
+      "text": "Porque Jehová es bueno; para siempre es su misericordia, /nY su verdad por todas las generaciones."
+    }
+  ]
+}

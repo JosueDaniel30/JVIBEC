@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <title>Metas | App Jóvenes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicación para jóvenes cristianos - metas espirituales, biblia y crecimiento personal">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="json/manifest.json">
+  <link rel="apple-touch-icon" href="assets/logojov.png">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuración personalizada de Tailwind -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#4f46e5', light: '#818cf8', dark: '#3730a3' },
+            secondary: { DEFAULT: '#10b981', light: '#34d399', dark: '#059669' },
+            accent: { DEFAULT: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+            'display': ['Poppins', 'sans-serif']
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'bounce-slow': 'bounce 2s infinite',
+            'progress-load': 'progressLoad 2s ease-out'
+          },
+          keyframes: {
+            progressLoad: {
+              '0%': { width: '0%' },
+              '100%': { width: 'var(--progress)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    .goal-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .goal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .goal-checkbox-wrapper {
+      position: relative;
+    }
+    
+    .goal-checkbox-wrapper input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .checkbox-custom {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      border: 2px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .checkbox-custom::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease, height 0.4s ease;
+    }
+    
+    .checkbox-custom:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-color: #9ca3af;
+    }
+    
+    .checkbox-custom:hover::before {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .checkbox-icon {
+      font-size: 28px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 2;
+      filter: grayscale(0.3);
+    }
+    
+    .checkbox-checkmark {
+      position: absolute;
+      font-size: 32px;
+      color: white;
+      opacity: 0;
+      transform: scale(0) rotate(-180deg);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 3;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    input[type="checkbox"]:checked ~ label .checkbox-custom {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-color: #10b981;
+      transform: scale(1.1);
+      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4), 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+    
+    input[type="checkbox"]:checked ~ label .checkbox-custom::before {
+      width: 0;
+      height: 0;
+    }
+    
+    input[type="checkbox"]:checked ~ label .checkbox-checkmark {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+    
+    input[type="checkbox"]:checked ~ label .checkbox-icon {
+      opacity: 0;
+      transform: scale(0) rotate(180deg);
+    }
+    
+    input[type="checkbox"]:checked ~ label .checkbox-custom:hover {
+      transform: scale(1.15);
+      box-shadow: 0 12px 24px rgba(16, 185, 129, 0.5), 0 0 0 6px rgba(16, 185, 129, 0.15);
+    }
+    
+    /* Animación de pulso al marcar */
+    @keyframes checkboxPulse {
+      0% {
+        box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4), 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      50% {
+        box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4), 0 0 0 10px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4), 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+    
+    input[type="checkbox"]:checked ~ label .checkbox-custom {
+      animation: checkboxPulse 0.6s ease-out;
+    }
+    
+    /* Animación de ondas (ripple effect) */
+    @keyframes rippleEffect {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+    
+    /* Modo oscuro */
+    .dark .checkbox-custom {
+      background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+      border-color: #4b5563;
+    }
+    
+    .dark .checkbox-custom:hover {
+      border-color: #6b7280;
+      background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    }
+    
+    .dark input[type="checkbox"]:checked ~ label .checkbox-custom {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-color: #10b981;
+    }
+    
+    .celebration-particle {
+      position: absolute;
+      font-size: 20px;
+      pointer-events: none;
+      animation: celebrationFloat 1s ease-out forwards;
+    }
+    
+    @keyframes celebrationFloat {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(0);
+        opacity: 0;
+      }
+    }
+    
+    .goal-item.celebrating {
+      animation: celebratePulse 0.6s ease;
+    }
+    
+    @keyframes celebratePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 64px;
+      z-index: 40;
+      backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
+
+  <!-- Navegación -->
+  <header class="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center space-x-3 group">
+          <div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-light rounded-xl flex items-center justify-center shadow-md">
+            <img src="assets/logojov.png" alt="Logo Jovenes" class="w-8 h-8">
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-xl bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">
+              Jóvenes con Cristo
+            </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Tu camino espiritual</p>
+          </div>
+        </a>
+
+        <!-- Navegación desktop -->
+        <nav class="hidden md:flex items-center space-x-1">
+          <a href="index.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">🏠</span>
+            <span>Inicio</span>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">👤</span>
+            <span>Perfil</span>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">📖</span>
+            <span>Biblia</span>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-accent/10 text-accent font-semibold">
+            <span class="text-lg">🎯</span>
+            <span>Metas</span>
+          </a>
+        </nav>
+
+        <!-- Acciones -->
+        <div class="flex items-center space-x-3">
+          <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg dark:hidden">🌙</span>
+            <span class="text-lg hidden dark:inline">☀️</span>
+          </button>
+          <button class="md:hidden p-2" id="mobile-menu-btn">
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" id="mobile-menu-backdrop"></div>
+    <div class="absolute inset-y-0 right-0 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 translate-x-full">
+      <div class="p-6 h-full flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+          <h3 class="text-xl font-bold">Menú</h3>
+          <button id="mobile-menu-close" class="p-2 text-2xl">×</button>
+        </div>
+        <nav class="space-y-2 flex-1">
+          <a href="index.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">🏠</span>
+            <div>
+              <div class="font-semibold">Inicio</div>
+              <div class="text-sm text-gray-500">Página principal</div>
+            </div>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">👤</span>
+            <div>
+              <div class="font-semibold">Perfil</div>
+              <div class="text-sm text-gray-500">Tu progreso</div>
+            </div>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">📖</span>
+            <div>
+              <div class="font-semibold">Biblia</div>
+              <div class="text-sm text-gray-500">Palabra de Dios</div>
+            </div>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-4 p-4 rounded-xl bg-accent/10 text-accent">
+            <span class="text-2xl">🎯</span>
+            <div>
+              <div class="font-semibold">Metas</div>
+              <div class="text-sm text-accent/70">Objetivos espirituales</div>
+            </div>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <main class="container mx-auto px-4 py-8">
+    
+    <!-- Header de metas -->
+    <section class="mb-10">
+      <div class="bg-gradient-to-br from-accent/10 to-amber-500/10 rounded-3xl p-8 md:p-10">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="flex-1">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              ¡Alcanza tus Metas Espirituales!
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-6 max-w-3xl">
+              "El que es fiel en lo muy poco, también en lo más es fiel"<br>
+              <span class="text-lg text-gray-500 dark:text-gray-400">- Lucas 16:10</span>
+            </p>
+            <div class="flex flex-wrap gap-3 mb-6">
+              <div class="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span>
+                  Progreso total: <span id="total-progress" class="font-bold">0</span>%
+                </span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button onclick="showAddGoalModal()" class="px-6 py-3.5 bg-accent hover:bg-accent-dark text-white font-semibold rounded-xl transition-colors flex items-center space-x-2 shadow-lg hover:shadow-xl">
+                <span class="text-xl">➕</span>
+                <span>Agregar Meta</span>
+              </button>
+              <button onclick="showStats()" class="px-6 py-3.5 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-2 border-accent text-accent font-semibold rounded-xl transition-colors flex items-center space-x-2">
+                <span class="text-xl">📈</span>
+                <span>Estadísticas</span>
+              </button>
+              <button onclick="shareProgress()" class="px-6 py-3.5 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-2 border-accent text-accent font-semibold rounded-xl transition-colors flex items-center space-x-2">
+                <span class="text-xl">📤</span>
+                <span>Compartir</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex-shrink-0">
+            <div class="relative">
+              <div class="w-48 h-48 md:w-56 md:h-56 bg-gradient-to-br from-accent to-amber-500 rounded-2xl flex items-center justify-center shadow-2xl">
+                <div class="text-center">
+                  <div class="text-6xl mb-4">🏆</div>
+                  <div class="text-white font-bold text-3xl" id="total-progress-display">0%</div>
+                  <div class="text-white/90">Completado</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progreso General -->
+    <section class="mb-10">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <h2 class="text-2xl font-bold mb-4">📊 Tu Progreso General</h2>
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mb-4">
+          <div id="overall-progress-fill" class="bg-gradient-to-r from-accent to-amber-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <p class="text-gray-600 dark:text-gray-400 text-center">Completa todas las metas para convertirte en un líder espiritual</p>
+      </div>
+    </section>
+
+    <!-- Herramientas -->
+    <section class="mb-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-lg transition-all" onclick="showAddGoalModal()">
+          <div class="text-4xl mb-3 text-center">➕</div>
+          <h3 class="font-bold text-center mb-2">Agregar Meta</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 text-center">Crea una meta personalizada</p>
+        </div>
+
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-lg transition-all" onclick="showStats()">
+          <div class="text-4xl mb-3 text-center">📈</div>
+          <h3 class="font-bold text-center mb-2">Estadísticas</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 text-center">Ve tu progreso detallado</p>
+        </div>
+
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-lg transition-all" onclick="shareProgress()">
+          <div class="text-4xl mb-3 text-center">📤</div>
+          <h3 class="font-bold text-center mb-2">Compartir</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 text-center">Muestra tus logros</p>
+        </div>
+
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-lg transition-all" onclick="if(confirm('¿Estás seguro de que quieres reiniciar todo tu progreso?')) resetAllProgress()">
+          <div class="text-4xl mb-3 text-center">🔄</div>
+          <h3 class="font-bold text-center mb-2">Reiniciar</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 text-center">Empieza de nuevo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metas por Nivel -->
+    <section class="mb-12">
+      <!-- Nivel Bronce -->
+      <div class="level-section bronze bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="level-header mb-4">
+          <button class="level-toggle w-full flex items-center justify-between p-4 bg-gradient-to-r from-amber-600/10 to-amber-500/10 rounded-xl hover:from-amber-600/20 hover:to-amber-500/20 transition-all" aria-expanded="true">
+            <div class="flex items-center space-x-4">
+              <span class="level-icon text-4xl">🥉</span>
+              <div class="level-info text-left">
+                <h3 class="font-bold text-xl">Nivel Bronce</h3>
+                <p class="text-gray-600 dark:text-gray-400">Hábitos diarios básicos</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span class="level-progress-text font-bold text-lg" id="bronze-percentage">0%</span>
+              <span class="toggle-icon text-2xl">▼</span>
+            </div>
+          </button>
+        </div>
+        <div id="bronze-goals" class="goals-grid grid grid-cols-1 md:grid-cols-2 gap-4" data-level="bronze">
+          <!-- Las metas se cargarán dinámicamente desde el HTML original -->
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="bronze1">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="bronze1">
+                  <label for="bronze1" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">📖</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Leer un versículo diario</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Dedica tiempo a la Palabra de Dios cada día</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +5 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> días de racha
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="bronze2">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="bronze2">
+                  <label for="bronze2" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">🙏</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Orar por 5 minutos</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Conversa con Dios diariamente</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +5 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> días de racha
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="bronze3">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="bronze3">
+                  <label for="bronze3" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">⛪</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Asistir a un culto semanal</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Únete a la comunidad de fe</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +10 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> semanas de racha
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="bronze4">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="bronze4">
+                  <label for="bronze4" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">💬</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Compartir un versículo</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Inspira a otros con la Palabra</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +10 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> veces compartido
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="bronze5">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="bronze5">
+                  <label for="bronze5" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">📝</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Reflexionar sobre tu día</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Revisa tu caminar espiritual</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +5 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> días de racha
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="level-progress mt-4">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            <div id="bronze-progress" class="bg-gradient-to-r from-amber-600 to-amber-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <p class="level-count text-center mt-2 text-gray-600 dark:text-gray-400" id="bronze-count">0/5 completadas</p>
+        </div>
+      </div>
+
+      <!-- Nivel Plata -->
+      <div class="level-section silver bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="level-header mb-4">
+          <button class="level-toggle w-full flex items-center justify-between p-4 bg-gradient-to-r from-gray-400/10 to-gray-300/10 rounded-xl hover:from-gray-400/20 hover:to-gray-300/20 transition-all" aria-expanded="false">
+            <div class="flex items-center space-x-4">
+              <span class="level-icon text-4xl">🥈</span>
+              <div class="level-info text-left">
+                <h3 class="font-bold text-xl">Nivel Plata</h3>
+                <p class="text-gray-600 dark:text-gray-400">Desarrollo espiritual intermedio</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span class="level-progress-text font-bold text-lg" id="silver-percentage">0%</span>
+              <span class="toggle-icon text-2xl">▶</span>
+            </div>
+          </button>
+        </div>
+        <div id="silver-goals" class="goals-grid grid grid-cols-1 md:grid-cols-2 gap-4 hidden" data-level="silver">
+          <!-- Metas de plata (similar estructura) -->
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="silver1">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="silver1">
+                  <label for="silver1" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">🧠</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Memorizar 5 versículos</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Graba la Palabra en tu corazón</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +15 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="progress-tracker">
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                      <div class="progress-fill-mini bg-gradient-to-r from-accent to-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text text-sm text-gray-600 dark:text-gray-400">0/5 versículos</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="silver2">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="silver2">
+                  <label for="silver2" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">🤝</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Ayudar en un ministerio</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Sirve a otros con tus dones</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +20 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> semanas de racha
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="silver3">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="silver3">
+                  <label for="silver3" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">📚</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Estudiar un libro bíblico</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Profundiza en la Escritura</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +25 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="progress-tracker">
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                      <div class="progress-fill-mini bg-gradient-to-r from-accent to-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text text-sm text-gray-600 dark:text-gray-400">0/10 capítulos</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="silver4">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="silver4">
+                  <label for="silver4" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">🎤</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Compartir tu testimonio</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Da esperanza a otros</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +20 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> veces compartido
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="silver5">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="silver5">
+                  <label for="silver5" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">❤️</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Orar por otros diariamente</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Intercede por tu comunidad</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +15 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> días de racha
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="level-progress mt-4">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            <div id="silver-progress" class="bg-gradient-to-r from-gray-400 to-gray-300 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <p class="level-count text-center mt-2 text-gray-600 dark:text-gray-400" id="silver-count">0/5 completadas</p>
+        </div>
+      </div>
+
+      <!-- Nivel Oro -->
+      <div class="level-section gold bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="level-header mb-4">
+          <button class="level-toggle w-full flex items-center justify-between p-4 bg-gradient-to-r from-amber-400/10 to-yellow-300/10 rounded-xl hover:from-amber-400/20 hover:to-yellow-300/20 transition-all" aria-expanded="false">
+            <div class="flex items-center space-x-4">
+              <span class="level-icon text-4xl">🥇</span>
+              <div class="level-info text-left">
+                <h3 class="font-bold text-xl">Nivel Oro</h3>
+                <p class="text-gray-600 dark:text-gray-400">Liderazgo espiritual avanzado</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span class="level-progress-text font-bold text-lg" id="gold-percentage">0%</span>
+              <span class="toggle-icon text-2xl">▶</span>
+            </div>
+          </button>
+        </div>
+        <div id="gold-goals" class="goals-grid grid grid-cols-1 md:grid-cols-2 gap-4 hidden" data-level="gold">
+          <!-- Metas de oro (similar estructura) -->
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="gold1">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="gold1">
+                  <label for="gold1" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">👨‍🏫</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Discipular a alguien</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Guía a otros en su caminar espiritual</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +30 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="progress-tracker">
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                      <div class="progress-fill-mini bg-gradient-to-r from-accent to-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text text-sm text-gray-600 dark:text-gray-400">0/3 personas</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="gold2">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="gold2">
+                  <label for="gold2" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">👥</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Liderar un grupo de estudio</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Facilita el aprendizaje colectivo</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +35 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="streak-info text-sm text-gray-600 dark:text-gray-400">
+                    <span class="streak-count">0</span> semanas liderando
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="gold3">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="gold3">
+                  <label for="gold3" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">🎓</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Completar un curso bíblico</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Amplía tu conocimiento teológico</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +40 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="progress-tracker">
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                      <div class="progress-fill-mini bg-gradient-to-r from-accent to-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text text-sm text-gray-600 dark:text-gray-400">0/12 lecciones</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="gold4">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="gold4">
+                  <label for="gold4" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">⚡</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Servir en múltiples ministerios</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Multiplica tu impacto en la iglesia</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +35 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="progress-tracker">
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                      <div class="progress-fill-mini bg-gradient-to-r from-accent to-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text text-sm text-gray-600 dark:text-gray-400">0/3 ministerios</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-item goal-card bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700" data-goal-id="gold5">
+            <div class="flex items-start space-x-4">
+              <div class="goal-checkbox-section">
+                <div class="goal-checkbox-wrapper">
+                  <input type="checkbox" id="gold5">
+                  <label for="gold5" class="goal-checkbox-label">
+                    <div class="checkbox-custom">
+                      <div class="checkbox-icon">🌟</div>
+                      <div class="checkbox-checkmark">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="goal-content-section flex-1">
+                <div class="goal-header flex justify-between items-start mb-2">
+                  <div class="goal-title-section">
+                    <h4 class="goal-title font-bold text-lg">Impactar vidas para Cristo</h4>
+                    <span class="goal-description text-sm text-gray-600 dark:text-gray-400">Sé instrumento de transformación</span>
+                  </div>
+                  <div class="goal-reward-badge bg-accent/20 text-accent px-3 py-1 rounded-lg text-sm font-semibold">
+                    +50 ⭐
+                  </div>
+                </div>
+                <div class="goal-progress">
+                  <div class="progress-tracker">
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                      <div class="progress-fill-mini bg-gradient-to-r from-accent to-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text text-sm text-gray-600 dark:text-gray-400">0/5 vidas</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="level-progress mt-4">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            <div id="gold-progress" class="bg-gradient-to-r from-amber-400 to-yellow-300 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <p class="level-count text-center mt-2 text-gray-600 dark:text-gray-400" id="gold-count">0/5 completadas</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metas Personalizadas -->
+    <section id="custom-goals-section" class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 mb-12">
+      <h2 class="text-2xl font-bold mb-4">🎯 Tus Metas Personalizadas</h2>
+      <div id="custom-goals-list" class="goals-grid grid grid-cols-1 md:grid-cols-2 gap-4" data-level="custom">
+        <p class="empty-state text-center py-8 text-gray-500 col-span-2">No tienes metas personalizadas aún. ¡Agrega una!</p>
+      </div>
+    </section>
+
+    <!-- Modal para agregar meta -->
+    <div id="add-goal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div class="modal-content bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+        <h3 class="text-2xl font-bold mb-6">Agregar Nueva Meta (Admin)</h3>
+        <form id="add-goal-form">
+          <div class="mb-4">
+            <label for="admin-password" class="block text-sm font-medium mb-2">Contraseña de Admin:</label>
+            <input type="password" id="admin-password" placeholder="Ingresa la contraseña de admin" required
+                   class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition">
+            <small class="text-gray-500 dark:text-gray-400 text-sm mt-1 block">
+              Solo los administradores pueden agregar nuevas metas.
+            </small>
+          </div>
+
+          <div class="mb-4">
+            <label for="goal-title" class="block text-sm font-medium mb-2">Título de la meta:</label>
+            <input type="text" id="goal-title" required
+                   class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition">
+          </div>
+
+          <div class="mb-4">
+            <label for="goal-description" class="block text-sm font-medium mb-2">Descripción:</label>
+            <textarea id="goal-description" rows="3"
+                      class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition"></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label for="goal-deadline" class="block text-sm font-medium mb-2">Fecha límite:</label>
+            <input type="date" id="goal-deadline"
+                   class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition">
+          </div>
+
+          <div class="mb-6">
+            <label for="goal-level" class="block text-sm font-medium mb-2">Nivel:</label>
+            <select id="goal-level" required
+                    class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition">
+              <option value="bronze">🥉 Bronce</option>
+              <option value="silver">🥈 Plata</option>
+              <option value="gold">🥇 Oro</option>
+              <option value="custom">🎯 Personalizada</option>
+            </select>
+          </div>
+
+          <div class="flex space-x-3">
+            <button type="button" onclick="closeModal()" class="flex-1 px-5 py-2.5 border-2 border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 rounded-xl font-medium transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" class="flex-1 px-5 py-2.5 bg-accent hover:bg-accent-dark text-white font-semibold rounded-xl transition-colors shadow hover:shadow-lg">
+              Agregar Meta
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- Scripts -->
+  <script src="js/script.js"></script>
+  <script src="js/metas.js"></script>
+
+  <!-- Script para menú móvil y tema -->
+  <script>
+    // Configurar menú móvil
+    function setupMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+      
+      function openMobileMenu() {
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.add('flex');
+        setTimeout(() => {
+          mobileMenu.querySelector('.absolute.right-0').classList.remove('translate-x-full');
+        }, 50);
+      }
+      
+      function closeMobileMenu() {
+        mobileMenu.querySelector('.absolute.right-0').classList.add('translate-x-full');
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('flex');
+        }, 300);
+      }
+      
+      if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
+      if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
+      if (mobileMenuBackdrop) mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+    }
+    
+    // Configurar tema
+    function setupThemeToggle() {
+      const themeToggle = document.getElementById('theme-toggle');
+      if (localStorage.getItem('theme') === 'dark' || 
+          (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+      }
+    }
+    
+    // Inicializar al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+      setupMobileMenu();
+      setupThemeToggle();
+      
+      // Actualizar display del progreso total
+      const totalProgress = document.getElementById('total-progress');
+      const totalProgressDisplay = document.getElementById('total-progress-display');
+      if (totalProgress && totalProgressDisplay) {
+        const observer = new MutationObserver(() => {
+          totalProgressDisplay.textContent = totalProgress.textContent + '%';
+        });
+        observer.observe(totalProgress, { childList: true, characterData: true, subtree: true });
+      }
+    });
+  </script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('Service Worker registrado con éxito:', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('Error al registrar el Service Worker:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

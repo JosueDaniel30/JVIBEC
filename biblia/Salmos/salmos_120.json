@@ -1,0 +1,35 @@
+{
+  "book": "Salmos",
+  "chapter": 120,
+  "version": "RVR1960",
+  "verses": [
+    {
+      "verse": 1,
+      "text": "A Jehová clamé estando en angustia, /nY él me respondió."
+    },
+    {
+      "verse": 2,
+      "text": "Libra mi alma, oh Jehová, del labio mentiroso, /nY de la lengua fraudulenta."
+    },
+    {
+      "verse": 3,
+      "text": "¿Qué te dará, o qué te aprovechará, /nOh lengua engañosa?"
+    },
+    {
+      "verse": 4,
+      "text": "Agudas saetas de valiente, /nCon brasas de enebro."
+    },
+    {
+      "verse": 5,
+      "text": "¡Ay de mí, que moro en Mesec, /nY habito entre las tiendas de Cedar!"
+    },
+    {
+      "verse": 6,
+      "text": "Mucho tiempo ha morado mi alma /nCon los que aborrecen la paz."
+    },
+    {
+      "verse": 7,
+      "text": "Yo soy pacífico; /nMas ellos, así que hablo, me hacen guerra."
+    }
+  ]
+}

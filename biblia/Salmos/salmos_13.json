@@ -1,0 +1,31 @@
+{
+  "book": "Salmos",
+  "chapter": 13,
+  "version": "RVR1960",
+  "verses": [
+    {
+      "verse": 1,
+      "text": "¿Hasta cuándo, Jehová? ¿Me olvidarás para siempre? /n¿Hasta cuándo esconderás tu rostro de mí?"
+    },
+    {
+      "verse": 2,
+      "text": "¿Hasta cuándo pondré consejos en mi alma, /nCon tristezas en mi corazón cada día? /n¿Hasta cuándo será enaltecido mi enemigo sobre mí?"
+    },
+    {
+      "verse": 3,
+      "text": "Mira, respóndeme, oh Jehová Dios mío; /nAlumbra mis ojos, para que no duerma de muerte;"
+    },
+    {
+      "verse": 4,
+      "text": "Para que no diga mi enemigo: Lo vencí. /nMis enemigos se alegrarían, si yo resbalara."
+    },
+    {
+      "verse": 5,
+      "text": "Mas yo en tu misericordia he confiado; /nMi corazón se alegrará en tu salvación."
+    },
+    {
+      "verse": 6,
+      "text": "Cantaré a Jehová, /nPorque me ha hecho bien."
+    }
+  ]
+}

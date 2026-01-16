@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | App Jóvenes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicación para jóvenes cristianos - metas espirituales, biblia y crecimiento personal">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="json/manifest.json">
+  <link rel="apple-touch-icon" href="assets/logojov.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/notificacion.css">
+</head>
+<body>
+
+<header class="top-nav">
+  <div class="nav-container">
+    <div class="logo-section">
+      <h1 class="logo">
+        <img src="assets/logojov.png" alt="Logo Jovenes" class="logo-icon">
+        <span class="logo-text">Jovenes con Cristo</span>
+      </h1>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="login-section">
+    <div class="login-container">
+      <div class="login-tabs">
+        <button id="login-tab" class="tab active">Iniciar Sesión</button>
+        <button id="register-tab" class="tab">Registrarse</button>
+      </div>
+
+      <div id="login-form" class="form-container active">
+        <h2>👋 Bienvenido de vuelta</h2>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="login-username">Nombre de Usuario:</label>
+            <input type="text" id="login-username" required>
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Contraseña:</label>
+            <input type="password" id="login-password" required>
+          </div>
+
+          <button type="submit" class="btn-plus">Iniciar Sesión</button>
+        </form>
+      </div>
+
+      <div id="register-form" class="form-container">
+        <h2>✨ Únete a nosotros</h2>
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="register-name">Nombre Completo:</label>
+            <input type="text" id="register-name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="register-username">Nombre de Usuario:</label>
+            <input type="text" id="register-username" required>
+          </div>
+
+          <div class="form-group">
+            <label for="register-password">Contraseña:</label>
+            <input type="password" id="register-password" required>
+          </div>
+
+          <div class="form-group">
+            <label for="register-birthdate">Fecha de Nacimiento:</label>
+            <input type="date" id="register-birthdate">
+          </div>
+
+          <div class="form-group">
+            <label for="register-church">Iglesia:</label>
+            <input type="text" id="register-church" placeholder="Nombre de tu iglesia">
+          </div>
+
+          <button type="submit" class="btn-plus">Registrarse</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/script.js"></script>
+<script src="js/login.js"></script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(registration) {
+          console.log('Service Worker registrado con éxito:', registration.scope);
+
+          // Escuchar por actualizaciones del service worker
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // Nueva versión disponible
+                if (confirm('Hay una nueva versión disponible. ¿Quieres actualizar?')) {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch(function(error) {
+          console.log('Error al registrar el Service Worker:', error);
+        });
+    });
+
+    // Escuchar cambios en el service worker
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      window.location.reload();
+    });
+  }
+

@@ -1,0 +1,50 @@
+{
+  "name": "Jóvenes con Cristo",
+  "short_name": "JovenesApp",
+  "description": "Aplicación para jóvenes cristianos - metas espirituales, biblia y crecimiento personal",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es",
+  "categories": ["lifestyle", "productivity", "books"],
+  "icons": [
+    {
+      "src": "logojov.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logojov.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Biblia",
+      "short_name": "Biblia",
+      "description": "Leer la Biblia",
+      "url": "/biblia.html",
+      "icons": [{ "src": "logojov.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Metas",
+      "short_name": "Metas",
+      "description": "Ver mis metas espirituales",
+      "url": "/metas.html",
+      "icons": [{ "src": "logojov.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Perfil",
+      "short_name": "Perfil",
+      "description": "Mi perfil personal",
+      "url": "/perfil.html",
+      "icons": [{ "src": "logojov.png", "sizes": "96x96" }]
+    }
+  ]
+}

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Perfil | Jóvenes con Cristo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tu perfil espiritual - Estadísticas, logros y crecimiento personal">
+  <meta name="theme-color" content="#10b981">
+  <link rel="manifest" href="json/manifest.json">
+  <link rel="apple-touch-icon" href="assets/logojov.png">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuración personalizada -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#4f46e5', light: '#818cf8', dark: '#3730a3' },
+            secondary: { DEFAULT: '#10b981', light: '#34d399', dark: '#059669' },
+            accent: { DEFAULT: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+            'display': ['Poppins', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Iconos de Lucide -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <link rel="stylesheet" href="css/notificacion.css">
+  
+  <style>
+    .circular-progress {
+      --progress: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(#10b981 calc(var(--progress) * 3.6deg), #e2e8f0 0deg);
+    }
+    
+    .circular-progress::before {
+      content: "";
+      position: absolute;
+      height: 100px;
+      width: 100px;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    .dark .circular-progress::before {
+      background-color: #1e293b;
+    }
+    
+    .progress-ring {
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.5s;
+    }
+    
+    .habit-check {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .habit-check.checked {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
+  
+  <!-- Navegación -->
+  <header class="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center space-x-3 group">
+          <div class="w-10 h-10 bg-gradient-to-br from-primary to-primary-light rounded-xl flex items-center justify-center shadow-md">
+            <img src="assets/logojov.png" alt="Logo Jovenes" class="w-8 h-8">
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-xl bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+              Jóvenes con Cristo
+      </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Tu camino espiritual</p>
+    </div>
+        </a>
+
+        <!-- Navegación desktop -->
+        <nav class="hidden md:flex items-center space-x-1">
+          <a href="index.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">🏠</span>
+            <span>Inicio</span>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-secondary/10 text-secondary font-semibold">
+            <span class="text-lg">👤</span>
+            <span>Perfil</span>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">📖</span>
+            <span>Biblia</span>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-2 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg">🎯</span>
+            <span>Metas</span>
+          </a>
+    </nav>
+
+        <!-- Acciones -->
+        <div class="flex items-center space-x-3">
+          <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-lg dark:hidden">🌙</span>
+            <span class="text-lg hidden dark:inline">☀️</span>
+          </button>
+          <button class="md:hidden p-2" id="mobile-menu-btn">
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400 mb-1.5"></div>
+            <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-400"></div>
+    </button>
+  </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" id="mobile-menu-backdrop"></div>
+    <div class="absolute inset-y-0 right-0 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 translate-x-full">
+      <div class="p-6 h-full flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+          <h3 class="text-xl font-bold">Menú</h3>
+          <button id="mobile-menu-close" class="p-2 text-2xl">×</button>
+        </div>
+        <nav class="space-y-2 flex-1">
+          <a href="index.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">🏠</span>
+            <div>
+              <div class="font-semibold">Inicio</div>
+              <div class="text-sm text-gray-500">Página principal</div>
+    </div>
+          </a>
+          <a href="perfil.html" class="flex items-center space-x-4 p-4 rounded-xl bg-secondary/10 text-secondary">
+            <span class="text-2xl">👤</span>
+            <div>
+              <div class="font-semibold">Perfil</div>
+              <div class="text-sm text-secondary/70">Tu progreso</div>
+            </div>
+          </a>
+          <a href="biblia.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">📖</span>
+            <div>
+              <div class="font-semibold">Biblia</div>
+              <div class="text-sm text-gray-500">Palabra de Dios</div>
+            </div>
+          </a>
+          <a href="metas.html" class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="text-2xl">🎯</span>
+            <div>
+              <div class="font-semibold">Metas</div>
+              <div class="text-sm text-gray-500">Objetivos espirituales</div>
+            </div>
+          </a>
+    </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal del perfil -->
+  <main class="container mx-auto px-4 py-8">
+    
+    <!-- Header del perfil -->
+    <section class="mb-10">
+      <div class="bg-gradient-to-br from-secondary/10 to-emerald-500/10 rounded-3xl p-6 md:p-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          <!-- Información del usuario -->
+          <div class="flex items-center space-x-6">
+            <div class="relative">
+              <div class="w-28 h-28 md:w-32 md:h-32 bg-gradient-to-br from-secondary to-emerald-500 rounded-2xl flex items-center justify-center shadow-xl overflow-hidden">
+                <img id="user-avatar-img" src="https://via.placeholder.com/100" alt="Foto de perfil" class="w-full h-full object-cover hidden" />
+                <span id="user-avatar" class="text-4xl">🙏</span>
+              </div>
+              <div class="absolute -bottom-2 -right-2 w-12 h-12 bg-accent rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-gray-900">
+                <span id="user-level" class="font-bold text-white">1</span>
+              </div>
+      <input type="file" id="profile-pic-input" accept="image/*" style="display: none;">
+            </div>
+            
+            <div>
+              <h1 id="user-name-display" class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Cargando...</h1>
+              <p id="user-details" class="text-gray-600 dark:text-gray-300 mb-4">Usuario de Jóvenes con Cristo</p>
+              
+              <div class="flex flex-wrap gap-3">
+                <div class="flex items-center space-x-2 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-full shadow-sm">
+                  <span class="text-lg">🔥</span>
+                  <span>
+                    <span id="streak-days" class="font-semibold">0</span> días
+                  </span>
+                </div>
+                <div class="flex items-center space-x-2 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-full shadow-sm">
+                  <span class="text-lg">⭐</span>
+                  <span>
+                    <span id="user-xp" class="font-semibold">0</span> XP
+                  </span>
+                </div>
+                <div class="flex items-center space-x-2 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-full shadow-sm">
+                  <span class="text-lg">📅</span>
+                  <span id="member-since">Miembro reciente</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Acciones rápidas -->
+          <div class="flex flex-col space-y-3">
+            <button id="edit-profile-btn" class="px-5 py-2.5 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-2 border-secondary text-secondary font-semibold rounded-xl transition-colors flex items-center justify-center space-x-2">
+              <span>✏️</span>
+              <span>Editar perfil</span>
+            </button>
+            <button onclick="shareProfile()" class="px-5 py-2.5 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-xl transition-colors flex items-center justify-center space-x-2">
+              <span>📤</span>
+              <span>Compartir logros</span>
+            </button>
+            <button id="edit-pic-btn" class="px-5 py-2.5 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors flex items-center justify-center space-x-2">
+              <span>📷</span>
+              <span>Cambiar foto</span>
+            </button>
+          </div>
+    </div>
+    </div>
+  </section>
+
+    <!-- Sección de edición de perfil -->
+    <section id="edit-section" style="display: none;" class="mb-10">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+        <h3 class="text-xl font-bold mb-4">Editar Perfil</h3>
+        <form>
+          <div class="mb-4">
+            <label for="user-name" class="block text-sm font-medium mb-2">Nombre</label>
+            <input type="text" id="user-name" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700">
+          </div>
+          <div class="mb-4">
+            <label for="user-birthdate" class="block text-sm font-medium mb-2">Fecha de nacimiento</label>
+            <input type="date" id="user-birthdate" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700">
+          </div>
+          <div class="mb-4">
+            <label for="user-church" class="block text-sm font-medium mb-2">Iglesia</label>
+            <input type="text" id="user-church" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700">
+          </div>
+          <div class="flex gap-4">
+            <button type="button" onclick="saveProfile()" class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors">Guardar</button>
+            <button type="button" id="cancel-edit-btn" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Progreso general -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-6 flex items-center">
+        <span class="mr-3">📈</span> Tu Progreso Espiritual
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Versículos leídos -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="total-verses">0</div>
+              <div class="text-gray-600 dark:text-gray-400">Versículos leídos</div>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl">📚</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div id="verses-progress" class="bg-blue-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+          </div>
+          <div class="text-right text-sm text-gray-500 mt-2">
+            Meta: <span id="verses-goal">100</span>
+          </div>
+        </div>
+        
+        <!-- Días de oración -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="prayer-days">0</div>
+              <div class="text-gray-600 dark:text-gray-400">Días orando</div>
+            </div>
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl">🙏</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div id="prayer-progress" class="bg-green-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+          </div>
+          <div class="text-right text-sm text-gray-500 mt-2">
+            Récord: <span id="prayer-record">7</span> días
+          </div>
+        </div>
+        
+        <!-- Metas completadas -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <div class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="goals-achieved">0</div>
+              <div class="text-gray-600 dark:text-gray-400">Metas logradas</div>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl">🎯</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div id="goals-progress" class="bg-purple-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+          </div>
+          <div class="text-right text-sm text-gray-500 mt-2">
+            En progreso: <span id="goals-active">0</span>
+          </div>
+        </div>
+        
+        <!-- Puntos de experiencia -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <div class="text-2xl font-bold text-amber-600 dark:text-amber-400" id="total-xp-display">0</div>
+              <div class="text-gray-600 dark:text-gray-400">Puntos de XP</div>
+            </div>
+            <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center">
+              <span class="text-2xl">⭐</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div id="xp-progress" class="bg-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+          </div>
+          <div class="text-right text-sm text-gray-500 mt-2">
+            Siguiente nivel: <span id="xp-next">250</span> XP
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hábitos y rutina -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <!-- Hábitos diarios -->
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold flex items-center">
+            <span class="mr-2">🔄</span> Hábitos Diarios
+          </h3>
+          <span class="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-medium">
+            Esta semana
+          </span>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+          <div class="space-y-4">
+            <!-- Lectura bíblica -->
+            <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                    <span class="text-blue-600 dark:text-blue-400">📖</span>
+                  </div>
+                  <div>
+                    <div class="font-semibold">Lectura bíblica</div>
+                    <div class="text-sm text-gray-500">5 minutos diarios</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-bold" id="bible-streak">0 días</div>
+                  <div class="text-sm text-gray-500">racha actual</div>
+                </div>
+              </div>
+              <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+                <span>Esta semana</span>
+                <span><span id="bible-week">0</span>/7 días</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div id="bible-week-progress" class="bg-blue-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+              </div>
+            </div>
+            
+            <!-- Oración -->
+            <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                    <span class="text-green-600 dark:text-green-400">🙏</span>
+                  </div>
+                  <div>
+                    <div class="font-semibold">Tiempo de oración</div>
+                    <div class="text-sm text-gray-500">Momento con Dios</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-bold" id="prayer-streak">0 días</div>
+                  <div class="text-sm text-gray-500">racha actual</div>
+                </div>
+              </div>
+              <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+                <span>Esta semana</span>
+                <span><span id="prayer-week">0</span>/7 días</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div id="prayer-week-progress" class="bg-green-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+              </div>
+            </div>
+            
+            <!-- Reflexión -->
+            <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                    <span class="text-purple-600 dark:text-purple-400">💭</span>
+                  </div>
+                  <div>
+                    <div class="font-semibold">Reflexión diaria</div>
+                    <div class="text-sm text-gray-500">Meditar en la Palabra</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-bold" id="reflection-streak">0 días</div>
+                  <div class="text-sm text-gray-500">racha actual</div>
+                </div>
+              </div>
+              <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+                <span>Esta semana</span>
+                <span><span id="reflection-week">0</span>/7 días</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div id="reflection-week-progress" class="bg-purple-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6 text-center">
+            <button onclick="viewHabitsDetails()" class="px-4 py-2 text-secondary hover:text-secondary-dark font-medium">
+              Ver detalles completos →
+            </button>
+          </div>
+        </div>
+  </section>
+
+      <!-- Logros y medallas -->
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold flex items-center">
+            <span class="mr-2">🏆</span> Logros Obtenidos
+          </h3>
+          <span class="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium">
+            <span id="achievements-count">0</span>/12
+          </span>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+          <div id="achievements-grid" class="grid grid-cols-3 gap-4">
+            <!-- Los logros se cargarán dinámicamente -->
+          </div>
+          
+          <div class="mt-6 text-center">
+            <button onclick="viewAllAchievements()" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl font-medium transition-colors">
+              Ver todos los logros
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Actividad reciente -->
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold flex items-center">
+          <span class="mr-2">📝</span> Actividad Reciente
+        </h3>
+        <button onclick="clearActivity()" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+          Limpiar historial
+        </button>
+    </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+        <div id="activity-list" class="space-y-4">
+          <!-- La actividad se cargará dinámicamente -->
+    </div>
+
+        <div class="mt-6 text-center">
+          <button onclick="loadMoreActivity()" class="px-5 py-2.5 border-2 border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 rounded-xl font-medium transition-colors">
+            Cargar más actividad
+          </button>
+        </div>
+    </div>
+  </section>
+
+    <!-- Configuración -->
+    <section class="mb-12">
+      <h3 class="text-xl font-bold mb-6 flex items-center">
+        <span class="mr-2">⚙️</span> Configuración
+      </h3>
+      
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Notificaciones -->
+          <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+            <div class="flex items-center justify-between mb-4">
+              <div class="font-semibold">Notificaciones</div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="notifications-toggle" checked class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+              </label>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Recibe recordatorios diarios y actualizaciones de tu progreso.
+            </p>
+          </div>
+          
+          <!-- Tema oscuro -->
+          <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+            <div class="flex items-center justify-between mb-4">
+              <div class="font-semibold">Tema oscuro</div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="dark-mode-toggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900"></div>
+              </label>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Cambia entre tema claro y oscuro según tu preferencia.
+            </p>
+          </div>
+          
+          <!-- Recordatorio diario -->
+          <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+            <div class="flex items-center justify-between mb-4">
+              <div class="font-semibold">Recordatorio diario</div>
+              <select id="daily-reminder-time" class="bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm">
+                <option>08:00 AM</option>
+                <option selected>09:00 AM</option>
+                <option>10:00 AM</option>
+                <option>07:00 PM</option>
+              </select>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Hora para recordatorios de lectura y oración.
+            </p>
+          </div>
+          
+          <!-- Privacidad -->
+          <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+            <div class="flex items-center justify-between mb-4">
+              <div class="font-semibold">Perfil público</div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="share-progress-toggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+              </label>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Permitir que otros vean tu progreso y logros.
+            </p>
+          </div>
+        </div>
+        
+        <div class="mt-8 flex justify-between">
+          <button onclick="exportData()" class="px-5 py-2.5 border-2 border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 rounded-xl font-medium transition-colors">
+            Exportar mis datos
+          </button>
+          <button onclick="resetProgress()" class="px-5 py-2.5 border-2 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl font-medium transition-colors">
+            Reiniciar progreso
+          </button>
+        </div>
+    </div>
+  </section>
+
+</main>
+
+
+  <!-- Scripts -->
+<script src="js/script.js"></script>
+<script src="js/profile.js"></script>
+
+  <!-- Script específico para perfil -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Inicializar Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+
+      // Menú móvil
+      setupMobileMenu();
+
+      // Configuración de tema
+      setupThemeToggle();
+
+    // Cargar datos del perfil
+    loadProfileData();
+    
+    // Cargar todas las estadísticas después de un pequeño delay para asegurar que el DOM esté listo
+    setTimeout(() => {
+      if (typeof updateAllProfileStats === 'function') {
+        updateAllProfileStats();
+      }
+    }, 200);
+    });
+
+    function setupMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+
+      if (!mobileMenuBtn || !mobileMenu) return;
+
+      function openMobileMenu() {
+        mobileMenu.classList.remove('hidden');
+        setTimeout(() => {
+          const menuPanel = mobileMenu.querySelector('.absolute.right-0');
+          if (menuPanel) menuPanel.classList.remove('translate-x-full');
+        }, 50);
+      }
+
+      function closeMobileMenu() {
+        const menuPanel = mobileMenu.querySelector('.absolute.right-0');
+        if (menuPanel) menuPanel.classList.add('translate-x-full');
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+      }
+
+      mobileMenuBtn.addEventListener('click', openMobileMenu);
+      if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
+      if (mobileMenuBackdrop) mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+    }
+
+    function setupThemeToggle() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+      // Cargar tema guardado
+      if (localStorage.getItem('theme') === 'dark' ||
+          (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        if (darkModeToggle) darkModeToggle.checked = true;
+      }
+
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+          if (darkModeToggle) darkModeToggle.checked = document.documentElement.classList.contains('dark');
+        });
+      }
+
+      if (darkModeToggle) {
+        darkModeToggle.addEventListener('change', function() {
+          document.documentElement.classList.toggle('dark', this.checked);
+          localStorage.setItem('theme', this.checked ? 'dark' : 'light');
+        });
+      }
+    }
+
+    function loadProfileData() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      const name = currentUser.name || 'Usuario Joven';
+      const birthdate = currentUser.birthdate ? new Date(currentUser.birthdate) : null;
+      const age = birthdate ? new Date().getFullYear() - birthdate.getFullYear() : null;
+      const church = currentUser.church || 'Jóvenes con Cristo';
+
+      const nameDisplay = document.getElementById('user-name-display');
+      const detailsDisplay = document.getElementById('user-details');
+      
+      if (nameDisplay) nameDisplay.textContent = name;
+      if (detailsDisplay) {
+        if (age) {
+          detailsDisplay.textContent = `Edad: ${age} años | Iglesia: ${church}`;
+        } else {
+          detailsDisplay.textContent = `Iglesia: ${church}`;
+        }
+      }
+
+      // Cargar en formulario
+      const nameInput = document.getElementById('user-name');
+      const birthdateInput = document.getElementById('user-birthdate');
+      const churchInput = document.getElementById('user-church');
+      
+      if (nameInput) nameInput.value = name;
+      if (birthdateInput) birthdateInput.value = currentUser.birthdate || '';
+      if (churchInput) churchInput.value = church;
+    }
+
+    function loadAllProfileData() {
+      // Esta función será llamada desde profile.js después de que se carguen todos los datos
+      if (typeof updateAllProfileStats === 'function') {
+        updateAllProfileStats();
+      }
+    }
+  </script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(registration) {
+          console.log('Service Worker registrado con éxito:', registration.scope);
+
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                if (confirm('Hay una nueva versión disponible. ¿Quieres actualizar?')) {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch(function(error) {
+          console.log('Error al registrar el Service Worker:', error);
+        });
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      window.location.reload();
+    });
+  }
+
+  if (window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true) {
+    console.log('Ejecutándose en modo PWA');
+  }
+
+  if ('Notification' in window && navigator.serviceWorker) {
+    if (Notification.permission === 'default') {
+      console.log('Notificaciones disponibles pero no solicitadas aún');
+    }
+  }
+</script>
+</body>
+</html>
