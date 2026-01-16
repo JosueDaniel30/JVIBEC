@@ -43,17 +43,17 @@ function checkPWAMetaTags(filePath) {
 const tests = [
     {
         name: '📄 Archivo manifest.json existe',
-        test: () => fileExists('manifest.json'),
+        test: () => fileExists('json/manifest.json'),
         critical: true
     },
     {
         name: '✅ manifest.json es JSON válido',
-        test: () => isValidJSON('manifest.json'),
+        test: () => isValidJSON('json/manifest.json'),
         critical: true
     },
     {
         name: '🔧 Archivo sw.js existe',
-        test: () => fileExists('sw.js'),
+        test: () => fileExists('js/sw.js'),
         critical: true
     },
     {
@@ -98,17 +98,17 @@ const tests = [
     },
     {
         name: '🎨 Archivo styles.css existe',
-        test: () => fileExists('styles.css'),
+        test: () => fileExists('css/styles.css'),
         critical: false
     },
     {
         name: '📜 Archivo script.js existe',
-        test: () => fileExists('script.js'),
+        test: () => fileExists('js/script.js'),
         critical: false
     },
     {
         name: '🖼️ Logo existe (logojov.png)',
-        test: () => fileExists('logojov.png'),
+        test: () => fileExists('assets/logojov.png'),
         critical: false
     }
 ];
@@ -135,9 +135,9 @@ console.log(`\n📊 Resultados: ${passedTests}/${tests.length} pruebas pasaron`)
 console.log(`🚨 Pruebas críticas fallidas: ${criticalFailed}`);
 
 // Validar contenido del manifest
-if (fileExists('manifest.json') && isValidJSON('manifest.json')) {
+if (fileExists('json/manifest.json') && isValidJSON('json/manifest.json')) {
     console.log('\n🔍 Validando contenido del manifest.json...');
-    const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+    const manifest = JSON.parse(fs.readFileSync('json/manifest.json', 'utf8'));
 
     const manifestChecks = [
         { name: 'Nombre de la app', check: manifest.name === 'Jóvenes con Cristo' },
@@ -157,9 +157,9 @@ if (fileExists('manifest.json') && isValidJSON('manifest.json')) {
 }
 
 // Validar service worker básico
-if (fileExists('sw.js')) {
+if (fileExists('js/sw.js')) {
     console.log('\n🔍 Validando contenido básico del service worker...');
-    const swContent = fs.readFileSync('sw.js', 'utf8');
+    const swContent = fs.readFileSync('js/sw.js', 'utf8');
 
     const swChecks = [
         { name: 'Registro de instalación', check: swContent.includes('install') },
@@ -177,9 +177,9 @@ if (fileExists('sw.js')) {
 }
 
 // Verificar registro del service worker en script.js
-if (fileExists('script.js')) {
+if (fileExists('js/script.js')) {
     console.log('\n🔍 Verificando registro del service worker...');
-    const scriptContent = fs.readFileSync('script.js', 'utf8');
+    const scriptContent = fs.readFileSync('js/script.js', 'utf8');
 
     const scriptChecks = [
         { name: 'Función registerServiceWorker existe', check: scriptContent.includes('registerServiceWorker') },
