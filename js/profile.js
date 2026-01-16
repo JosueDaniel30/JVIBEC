@@ -130,7 +130,7 @@ function displayProfile() {
     const name = currentUser.name || 'Usuario Joven';
     const birthdate = currentUser.birthdate ? new Date(currentUser.birthdate) : null;
     const age = birthdate ? new Date().getFullYear() - birthdate.getFullYear() : null;
-    const church = currentUser.church || 'Jóvenes con Cristo';
+    const church = currentUser.church || 'Iglesia Bautista el Camino';
 
     const nameDisplay = document.getElementById('user-name-display');
     const detailsDisplay = document.getElementById('user-details');
