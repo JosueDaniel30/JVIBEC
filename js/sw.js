@@ -1,7 +1,7 @@
 // Service Worker para Jóvenes con Cristo PWA
-const CACHE_NAME = 'jovenes-app-v1.0.0';
-const STATIC_CACHE = 'jovenes-static-v1.0.0';
-const DYNAMIC_CACHE = 'jovenes-dynamic-v1.0.0';
+const CACHE_NAME = 'jovenes-app-v1.2.0';
+const STATIC_CACHE = 'jovenes-static-v1.2.0';
+const DYNAMIC_CACHE = 'jovenes-dynamic-v1.2.0';
 
 // Recursos a cachear inicialmente
 const STATIC_ASSETS = [
